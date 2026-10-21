@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vídeos Peat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f7f3;--ink:#12211a;--mute:#5b6b62;--line:#d3ddd6;--green:#00843d;--deep:#0b3d2e;--yellow:#ffd23f;--card:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1a14;--ink:#eaf2ec;--mute:#9fb2a6;--line:#25392e;--green:#38c172;--deep:#eaf2ec;--card:#15251c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1400px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
+header{padding:22px 0 18px}
+h1{margin:0;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-.02em;color:var(--deep)}
+header p{margin:2px 0 0;color:var(--mute)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:32px;align-items:start;padding-bottom:56px}
+.stage{aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden}
+video{display:block;width:100%;height:100%;object-fit:contain}
+h2{margin:18px 0 4px;font-size:1.3rem;font-weight:600}
+.mute{color:var(--mute);margin:0}
+aside{position:sticky;top:16px}
+aside h2{margin:0 0 10px;font-size:1rem}
+ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+li button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:128px 1fr;gap:12px;width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+li button:hover{border-color:var(--green)}
+li button[aria-current=true]{border-color:var(--green);box-shadow:inset 5px 0 0 var(--yellow)}
+li button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+img{width:128px;aspect-ratio:16/9;object-fit:cover;border-radius:5px;background:#000}
+li strong{display:block;font-weight:600;line-height:1.3}
+li small{color:var(--mute)}
+@media (max-width:900px){.grid{grid-template-columns:1fr}aside{position:static}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Vídeos Peat</h1>
+    <p>Escolha um vídeo da lista para assistir.</p>
+  </header>
+  <div class="grid">
+    <section>
+      <div class="stage"><video id="v" controls playsinline preload="metadata"></video></div>
+      <h2 id="t"></h2>
+      <p class="mute" id="d"></p>
+      <p class="mute" id="p" hidden></p>
+    </section>
+    <aside>
+      <h2>Todos os vídeos</h2>
+      <ul id="list"></ul>
+    </aside>
+  </div>
+</div>
+<script>
+// Para adicionar um vídeo, inclua um item nesta lista.
+// Se o vídeo estiver dividido em partes, use src: ["videos/a.mp4", "videos/b.mp4"] (tocam em sequência).
+const VIDEOS = [
+  { id: "peat-reuniao-educativa-4",
+    titulo: "Reunião Educativa 4",
+    descricao: "Peat 2026. Emissões atmosféricas e atitudes práticas na logística terrestre (LOEP/LTA/SMS).",
+    duracao: "19:22",
+    src: "videos/peat-reuniao-educativa-4.mp4",
+    capa: "posters/peat-reuniao-educativa-4.jpg" }
+];
+
+const $ = s => document.querySelector(s), v = $("#v"), list = $("#list");
+let partes = [], parte = 0;
+
+VIDEOS.forEach(x => {
+  const li = document.createElement("li"), b = document.createElement("button");
+  b.type = "button"; b.dataset.id = x.id;
+  b.innerHTML = `<img src="${x.capa}" alt="" loading="lazy"><span><strong>${x.titulo}</strong><small>${x.duracao}</small></span>`;
+  b.onclick = () => abrir(x.id, true);
+  li.append(b); list.append(li);
+});
+
+function marcarParte() {
+  const p = $("#p");
+  p.hidden = partes.length < 2;
+  p.textContent = `Parte ${parte + 1} de ${partes.length}`;
+}
+
+function abrir(id, tocar) {
+  const x = VIDEOS.find(i => i.id === id) || VIDEOS[0];
+  partes = [].concat(x.src); parte = 0;
+  v.poster = x.capa; v.src = partes[0];
+  $("#t").textContent = x.titulo; $("#d").textContent = x.descricao;
+  document.title = x.titulo + " – Vídeos Peat";
+  list.querySelectorAll("button").forEach(b => b.setAttribute("aria-current", String(b.dataset.id === x.id)));
+  history.replaceState(null, "", "#" + x.id);
+  marcarParte();
+  if (tocar) {
+    v.play().catch(() => {});
+    const calmo = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    v.scrollIntoView({ behavior: calmo ? "auto" : "smooth", block: "center" });
+  }
+}
+
+v.addEventListener("ended", () => {
+  if (parte < partes.length - 1) { v.src = partes[++parte]; v.play(); marcarParte(); }
+});
+addEventListener("hashchange", () => abrir(location.hash.slice(1), false));
+abrir(location.hash.slice(1), false);
+</script>
+</body>
+</html>
