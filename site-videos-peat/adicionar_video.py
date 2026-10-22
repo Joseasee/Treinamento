@@ -1,9 +1,11 @@
-"""Junta e comprime vídeos para o site. O arquivo final fica abaixo de 100 MB (limite do GitHub).
+"""Junta e comprime vídeos para o site. O arquivo final fica abaixo de 50 MB (limite do Supabase gratuito).
 
 Uso (dentro da pasta do site, com o ffmpeg instalado):
     python adicionar_video.py slug "Título do vídeo" parte1.mp4 [parte2.mp4 ...]
 
-Gera videos/<slug>.mp4 e posters/<slug>.jpg e imprime a linha para colar na lista VIDEOS do index.html.
+Gera originais/<slug>.mp4 e originais/<slug>.jpg (ficam só no seu computador) e imprime o comando
+para enviá-los ao Supabase.
+Dica: também dá para enviar o vídeo direto pelo site, entrando com a senha de ADM (painel "Administração").
 """
 import json
 import subprocess
@@ -14,7 +16,7 @@ if len(sys.argv) < 4:
     sys.exit(__doc__)
 slug, titulo, *entradas = sys.argv[1:]
 
-ALVO = 95 * 1024 * 1024  # bytes: margem abaixo dos 100 MiB do GitHub
+ALVO = 45 * 1024 * 1024  # bytes: margem abaixo dos 50 MB do Supabase gratuito
 AUDIO = 80_000           # bits/s
 
 
@@ -29,9 +31,8 @@ total = sum(durs)
 # teto de bitrate calculado para o arquivo final nunca passar de ALVO
 video_bps = max(150_000, int(ALVO * 8 / total - AUDIO))
 
-Path("videos").mkdir(exist_ok=True)
-Path("posters").mkdir(exist_ok=True)
-saida, capa = f"videos/{slug}.mp4", f"posters/{slug}.jpg"
+Path("originais").mkdir(exist_ok=True)
+saida, capa = f"originais/{slug}.mp4", f"originais/{slug}.jpg"
 
 cena = f"fps=30,scale={w}:{h}:force_original_aspect_ratio=decrease,pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:black,setsar=1"
 audio = "aformat=sample_rates=48000:channel_layouts=stereo"
@@ -53,6 +54,9 @@ subprocess.run(["ffmpeg", "-y", "-v", "error", "-ss", str(min(20, durs[0] / 2)),
 
 mm, ss = divmod(round(total), 60)
 print(f"\nTamanho final: {Path(saida).stat().st_size / 1024 / 1024:.1f} MB")
-print("\nCole na lista VIDEOS do index.html:")
-print(f'{{ id: "{slug}", titulo: {json.dumps(titulo, ensure_ascii=False)}, descricao: "", '
-      f'duracao: "{mm}:{ss:02d}", src: "{saida}", capa: "{capa}" }},')
+titulo_sql = titulo.replace("'", "''")
+print("\nPróximos passos no Supabase:")
+print(f"1) Storage → bucket videos → Upload: {slug}.mp4 e {slug}.jpg (da pasta originais)")
+print("2) SQL Editor → rode (troque a descrição e a ordem se quiser):")
+print(f"insert into public.catalogo (id, titulo, descricao, duracao, arquivo, capa, ordem) values "
+      f"('{slug}', '{titulo_sql}', '', '{mm}:{ss:02d}', '{slug}.mp4', '{slug}.jpg', 99);")
