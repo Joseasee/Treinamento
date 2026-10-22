@@ -35,16 +35,16 @@ h2{margin:18px 0 4px;font-size:1.3rem;font-weight:600}
 aside{position:sticky;top:16px}
 aside h2{margin:0 0 10px;font-size:1rem}
 ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-li button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:128px 1fr;gap:12px;width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
-li button:hover{border-color:var(--green)}
-li button[aria-current=true]{border-color:var(--green);box-shadow:inset 5px 0 0 var(--yellow)}
-li button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+li button[data-id]{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:128px 1fr;gap:12px;align-items:center;width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+li button[data-id]:hover{border-color:var(--green)}
+li button[data-id][aria-current=true]{border-color:var(--green);box-shadow:inset 5px 0 0 var(--yellow)}
+li button[data-id]:focus-visible{outline:3px solid var(--green);outline-offset:2px}
 img{width:128px;aspect-ratio:16/9;object-fit:cover;border-radius:5px;background:#000}
 li strong{display:block;font-weight:600;line-height:1.3}
 li small{color:var(--mute)}
-li{position:relative}
-.del{position:absolute;top:6px;right:6px;font:inherit;font-size:.8rem;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:2px 8px;color:var(--err);cursor:pointer}
-.del:hover{border-color:var(--err)}
+li{display:grid;gap:4px}
+.del{justify-self:end;font:inherit;font-size:.8rem;background:none;border:1px solid var(--line);border-radius:6px;padding:3px 10px;color:var(--err);cursor:pointer}
+.del:hover{border-color:var(--err);background:var(--card)}
 #adm{margin:0 0 24px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:0 16px}
 #adm summary{cursor:pointer;font-weight:600;padding:12px 0}
 #fa{display:grid;gap:12px;padding:4px 0 16px;max-width:560px}
