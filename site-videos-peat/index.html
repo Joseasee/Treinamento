@@ -3,19 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
 <title>Vídeos Peat</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4f7f3;--ink:#12211a;--mute:#5b6b62;--line:#d3ddd6;--green:#00843d;--deep:#0b3d2e;--yellow:#ffd23f;--card:#fff}
-@media (prefers-color-scheme:dark){:root{--bg:#0e1a14;--ink:#eaf2ec;--mute:#9fb2a6;--line:#25392e;--green:#38c172;--deep:#eaf2ec;--card:#15251c}}
+:root{--bg:#f4f7f3;--ink:#12211a;--mute:#5b6b62;--line:#d3ddd6;--green:#00843d;--on:#fff;--deep:#0b3d2e;--yellow:#ffd23f;--card:#fff;--err:#b3261e}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1a14;--ink:#eaf2ec;--mute:#9fb2a6;--line:#25392e;--green:#38c172;--on:#04200f;--deep:#eaf2ec;--card:#15251c;--err:#ff9a90}}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .wrap{max-width:1400px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
-header{padding:22px 0 18px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:22px 0 18px}
 h1{margin:0;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-.02em;color:var(--deep)}
 header p{margin:2px 0 0;color:var(--mute)}
+#sair{font:inherit;background:none;border:1px solid var(--line);border-radius:8px;padding:6px 14px;color:var(--ink);cursor:pointer}
+#login{min-height:100svh;display:grid;place-items:center;padding:24px}
+#f{width:min(360px,100%);display:grid;gap:14px}
+label{display:grid;gap:4px;font-weight:600}
+input{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.ent{font:inherit;font-weight:600;padding:11px 14px;border:0;border-radius:8px;background:var(--green);color:var(--on);cursor:pointer}
+.ent:disabled{opacity:.6}
+.erro{min-height:1.5em;margin:0;color:var(--err)}
+:is(input,.ent,#sair):focus-visible{outline:3px solid var(--green);outline-offset:2px}
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:32px;align-items:start;padding-bottom:56px}
 .stage{aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden}
 video{display:block;width:100%;height:100%;object-fit:contain}
@@ -31,15 +42,48 @@ li button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
 img{width:128px;aspect-ratio:16/9;object-fit:cover;border-radius:5px;background:#000}
 li strong{display:block;font-weight:600;line-height:1.3}
 li small{color:var(--mute)}
+li{position:relative}
+.del{position:absolute;top:6px;right:6px;font:inherit;font-size:.8rem;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:2px 8px;color:var(--err);cursor:pointer}
+.del:hover{border-color:var(--err)}
+#adm{margin:0 0 24px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:0 16px}
+#adm summary{cursor:pointer;font-weight:600;padding:12px 0}
+#fa{display:grid;gap:12px;padding:4px 0 16px;max-width:560px}
+#fa small{font-weight:400;color:var(--mute)}
+textarea{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);resize:vertical}
+#fa input[type=file]{padding:8px}
+.ok{color:var(--green)}
+:is(textarea,.del,summary):focus-visible{outline:3px solid var(--green);outline-offset:2px}
 @media (max-width:900px){.grid{grid-template-columns:1fr}aside{position:static}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
+<main id="login" hidden>
+  <form id="f">
     <h1>Vídeos Peat</h1>
-    <p>Escolha um vídeo da lista para assistir.</p>
+    <label>Senha<input id="s" type="password" autocomplete="current-password" required autofocus></label>
+    <button class="ent" id="ent">Entrar</button>
+    <p class="erro" id="erro" role="alert"></p>
+  </form>
+</main>
+<div id="app" class="wrap" hidden>
+  <header>
+    <div>
+      <h1>Vídeos Peat</h1>
+      <p>Escolha um vídeo da lista para assistir.</p>
+    </div>
+    <button id="sair" type="button">Sair</button>
   </header>
+  <details id="adm" hidden>
+    <summary>Administração: adicionar vídeo</summary>
+    <form id="fa">
+      <label>Título<input id="at" type="text" required maxlength="120"></label>
+      <label>Descrição (opcional)<textarea id="ad" rows="2" maxlength="500"></textarea></label>
+      <label>Arquivo de vídeo<input id="av" type="file" accept="video/*" required></label>
+      <label>Capa (opcional)<small>Se não escolher, a capa é tirada do próprio vídeo.</small><input id="ac" type="file" accept="image/*"></label>
+      <button class="ent" id="envia" type="submit">Enviar vídeo</button>
+      <p class="erro" id="aviso" role="status"></p>
+    </form>
+  </details>
   <div class="grid">
     <section>
       <div class="stage"><video id="v" controls playsinline preload="metadata"></video></div>
@@ -53,56 +97,259 @@ li small{color:var(--mute)}
     </aside>
   </div>
 </div>
+<script src="supabase.js"></script>
+<script src="config.js"></script>
 <script>
-// Para adicionar um vídeo, inclua um item nesta lista.
-// Se o vídeo estiver dividido em partes, use src: ["videos/a.mp4", "videos/b.mp4"] (tocam em sequência).
-const VIDEOS = [
-  { id: "peat-reuniao-educativa-4",
-    titulo: "Reunião Educativa 4",
-    descricao: "Peat 2026. Emissões atmosféricas e atitudes práticas na logística terrestre (LOEP/LTA/SMS).",
-    duracao: "19:22",
-    src: "videos/peat-reuniao-educativa-4.mp4",
-    capa: "posters/peat-reuniao-educativa-4.jpg" }
-];
-
 const $ = s => document.querySelector(s), v = $("#v"), list = $("#list");
-let partes = [], parte = 0;
+const DIA = 24 * 60 * 60 * 1000;   // senha comum: o aparelho fica lembrado por 24 h (ADM: sem prazo)
+const cfg = window.PEAT_CONFIG || {};
+const configurado = /^https:\/\/.+\.supabase\.co\/?$/.test(cfg.url || "") && !/COLE/.test(cfg.url) && !!cfg.chave && !/COLE/.test(cfg.chave)
+  && !!cfg.emailComum && !!cfg.emailAdm;
+const sb = configurado ? supabase.createClient(cfg.url, cfg.chave) : null;
+let catalogo = [], atual = null, adm = false, renovando = false;
 
-VIDEOS.forEach(x => {
-  const li = document.createElement("li"), b = document.createElement("button");
-  b.type = "button"; b.dataset.id = x.id;
-  b.innerHTML = `<img src="${x.capa}" alt="" loading="lazy"><span><strong>${x.titulo}</strong><small>${x.duracao}</small></span>`;
-  b.onclick = () => abrir(x.id, true);
-  li.append(b); list.append(li);
-});
+const entrada = () => Number(localStorage.getItem("peat:entrada") || 0);
 
-function marcarParte() {
-  const p = $("#p");
-  p.hidden = partes.length < 2;
-  p.textContent = `Parte ${parte + 1} de ${partes.length}`;
+async function assinar(caminho, segundos = 4 * 3600) {
+  const { data, error } = await sb.storage.from("videos").createSignedUrl(caminho, segundos);
+  if (error) throw error;
+  return data.signedUrl;
 }
 
-function abrir(id, tocar) {
-  const x = VIDEOS.find(i => i.id === id) || VIDEOS[0];
-  partes = [].concat(x.src); parte = 0;
-  v.poster = x.capa; v.src = partes[0];
+function limparVideo() { v.pause(); v.removeAttribute("src"); v.removeAttribute("poster"); v.load(); }
+
+function mostrarLogin() {
+  limparVideo();
+  $("#app").hidden = true; $("#adm").hidden = true; $("#login").hidden = false;
+  list.replaceChildren(); catalogo = []; atual = null; adm = false;
+}
+
+async function sair() {
+  await sb.auth.signOut();
+  localStorage.removeItem("peat:entrada");
+  history.replaceState(null, "", location.pathname);
+  mostrarLogin();
+}
+
+async function abrir(id, tocar) {
+  const x = catalogo.find(i => i.id === id) || catalogo[0];
+  const p = $("#p");
+  if (!x) {
+    atual = null; limparVideo(); document.title = "Vídeos Peat";
+    $("#t").textContent = "Nenhum vídeo disponível ainda."; $("#d").textContent = ""; p.hidden = true;
+    return;
+  }
+  atual = x;
   $("#t").textContent = x.titulo; $("#d").textContent = x.descricao;
   document.title = x.titulo + " – Vídeos Peat";
-  list.querySelectorAll("button").forEach(b => b.setAttribute("aria-current", String(b.dataset.id === x.id)));
+  list.querySelectorAll("button[data-id]").forEach(b => b.setAttribute("aria-current", String(b.dataset.id === x.id)));
   history.replaceState(null, "", "#" + x.id);
-  marcarParte();
-  if (tocar) {
-    v.play().catch(() => {});
-    const calmo = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    v.scrollIntoView({ behavior: calmo ? "auto" : "smooth", block: "center" });
-  }
+  v.pause(); v.removeAttribute("src"); v.load(); v.poster = x.capaUrl || ""; p.hidden = true;
+  if (tocar) v.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+  try {
+    const url = await assinar(x.arquivo);
+    if (atual !== x) return;   // trocou de vídeo enquanto o link era gerado
+    v.src = url;
+    if (tocar) v.play().catch(() => {});
+  } catch { if (atual === x) { p.hidden = false; p.textContent = "Não foi possível carregar o vídeo."; } }
 }
 
-v.addEventListener("ended", () => {
-  if (parte < partes.length - 1) { v.src = partes[++parte]; v.play(); marcarParte(); }
+// Se o link do vídeo expirar (ex.: pausa muito longa), gera outro e volta ao mesmo ponto.
+v.addEventListener("error", async () => {
+  if (!atual || !v.getAttribute("src") || renovando) return;
+  renovando = true;
+  const x = atual, t = v.currentTime;
+  try {
+    v.src = await assinar(x.arquivo);
+    v.addEventListener("loadedmetadata", () => { v.currentTime = t; }, { once: true });
+  } catch { /* segue com o erro na tela */ }
+  setTimeout(() => { renovando = false; }, 10000);
 });
-addEventListener("hashchange", () => abrir(location.hash.slice(1), false));
-abrir(location.hash.slice(1), false);
+
+async function abrirApp(abrirId) {
+  const { data, error } = await sb.from("catalogo").select("id,titulo,descricao,duracao,arquivo,capa,ordem").order("ordem");
+  if (error) throw error;
+  catalogo = data;
+  list.replaceChildren();
+  for (const x of catalogo) {
+    const li = document.createElement("li"), b = document.createElement("button");
+    b.type = "button"; b.dataset.id = x.id;
+    b.innerHTML = '<img alt=""><span><strong></strong><small></small></span>';
+    b.querySelector("strong").textContent = x.titulo;
+    b.querySelector("small").textContent = x.duracao;
+    b.onclick = () => abrir(x.id, true);
+    li.append(b);
+    if (adm) {
+      const d = document.createElement("button");
+      d.type = "button"; d.className = "del"; d.textContent = "Excluir";
+      d.setAttribute("aria-label", "Excluir o vídeo " + x.titulo);
+      d.onclick = () => excluir(x);
+      li.append(d);
+    }
+    list.append(li);
+  }
+  $("#login").hidden = true; $("#app").hidden = false; $("#adm").hidden = !adm;
+  abrir(abrirId ?? location.hash.slice(1), false);
+  const caminhos = catalogo.map(x => x.capa).filter(Boolean);
+  if (!caminhos.length) return;
+  sb.storage.from("videos").createSignedUrls(caminhos, 3600).then(({ data: urls }) => {
+    (urls || []).forEach(u => {
+      const i = catalogo.findIndex(x => x.capa === u.path);
+      if (i < 0 || !u.signedUrl) return;
+      catalogo[i].capaUrl = u.signedUrl;
+      list.children[i].querySelector("img").src = u.signedUrl;
+      if (atual === catalogo[i]) v.poster = u.signedUrl;
+    });
+  }).catch(() => {});
+}
+
+// Confere se a conta está liberada e se o prazo de 24 h (exceto ADM) ainda vale.
+async function iniciarSessao() {
+  const { data: acesso, error } = await sb.from("acesso").select("adm").maybeSingle();
+  if (error) throw error;
+  if (!acesso) return "sem-acesso";
+  adm = !!acesso.adm;
+  if (!adm && Date.now() - entrada() > DIA) return "expirou";
+  await abrirApp();
+  return "ok";
+}
+
+// ---------- ADM: adicionar e excluir vídeos ----------
+const aviso = (txt, ok) => { const a = $("#aviso"); a.textContent = txt; a.classList.toggle("ok", !!ok); };
+
+function slug(t) {
+  return t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40) || "video";
+}
+
+// Lê a duração e tira uma imagem do vídeo (para a capa), tudo no navegador.
+function lerVideo(arquivo) {
+  return new Promise(resolve => {
+    const el = document.createElement("video"), url = URL.createObjectURL(arquivo);
+    let duracao = "", feito = false;
+    const fim = capa => { if (feito) return; feito = true; URL.revokeObjectURL(url); resolve({ duracao, capa }); };
+    el.muted = true; el.preload = "metadata"; el.playsInline = true;
+    el.onerror = () => fim(null);
+    el.onloadedmetadata = () => {
+      const t = Math.round(el.duration || 0);
+      duracao = isFinite(t) && t > 0 ? `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}` : "";
+      el.currentTime = Math.min(20, (el.duration || 2) / 2);
+    };
+    el.onseeked = () => {
+      try {
+        const c = document.createElement("canvas");
+        c.width = 640; c.height = Math.round(640 * (el.videoHeight || 360) / (el.videoWidth || 640));
+        c.getContext("2d").drawImage(el, 0, 0, c.width, c.height);
+        c.toBlob(b => fim(b), "image/jpeg", 0.8);
+      } catch { fim(null); }
+    };
+    setTimeout(() => fim(null), 15000);
+    el.src = url;
+  });
+}
+
+$("#fa").onsubmit = async e => {
+  e.preventDefault();
+  const btn = $("#envia"), titulo = $("#at").value.trim(), descricao = $("#ad").value.trim();
+  const vf = $("#av").files[0], cf = $("#ac").files[0];
+  if (!titulo || !vf) return;
+  btn.disabled = true; aviso("Preparando…");
+  const subidos = [];
+  try {
+    const id = slug(titulo) + "-" + Date.now().toString(36);
+    const ext = (vf.name.split(".").pop() || "mp4").toLowerCase().replace(/[^a-z0-9]/g, "") || "mp4";
+    const arquivo = `${id}.${ext}`;
+    const info = await lerVideo(vf);
+    const imagem = cf || info.capa;
+    const capa = imagem ? `${id}.jpg` : "";
+
+    aviso(`Enviando o vídeo (${(vf.size / 1048576).toFixed(0)} MB). Não feche a página…`);
+    let r = await sb.storage.from("videos").upload(arquivo, vf, { contentType: vf.type || "video/mp4", upsert: false });
+    if (r.error) throw r.error;
+    subidos.push(arquivo);
+    if (imagem) {
+      r = await sb.storage.from("videos").upload(capa, imagem, { contentType: imagem.type || "image/jpeg", upsert: false });
+      if (r.error) throw r.error;
+      subidos.push(capa);
+    }
+    const ordem = catalogo.reduce((m, x) => Math.max(m, x.ordem || 0), 0) + 1;
+    const { error } = await sb.from("catalogo").insert({ id, titulo, descricao, duracao: info.duracao, arquivo, capa, ordem });
+    if (error) throw error;
+    $("#fa").reset();
+    await abrirApp(id);
+    aviso("Vídeo adicionado.", true);
+  } catch (err) {
+    if (subidos.length) await sb.storage.from("videos").remove(subidos).catch(() => {});
+    const m = String(err && err.message || "");
+    aviso(/size|exceed|too large|413/i.test(m)
+      ? "O arquivo passou do tamanho máximo do Supabase (50 MB no plano gratuito). Comprima o vídeo e tente de novo."
+      : "Não foi possível adicionar o vídeo. " + m);
+  }
+  btn.disabled = false;
+};
+
+async function excluir(x) {
+  if (!confirm(`Excluir "${x.titulo}"? O vídeo e a capa serão apagados e não dá para desfazer.`)) return;
+  try {
+    const { data, error } = await sb.from("catalogo").delete().eq("id", x.id).select("id");
+    if (error) throw error;
+    if (!data || !data.length) throw new Error("sem permissão");
+    await sb.storage.from("videos").remove([x.arquivo, x.capa].filter(Boolean)).catch(() => {});
+    await abrirApp(atual && atual.id !== x.id ? atual.id : "");
+  } catch { alert("Não foi possível excluir o vídeo."); }
+}
+
+// ---------- Login só com senha ----------
+// A senha comum e a de ADM são de duas contas internas; a página tenta uma e depois a outra.
+async function entrar(senha) {
+  for (const email of [cfg.emailComum, cfg.emailAdm]) {
+    const { error } = await sb.auth.signInWithPassword({ email, password: senha });
+    if (!error) return null;
+    if (error.code !== "invalid_credentials" && error.status !== 400) return error;
+  }
+  return { code: "invalid_credentials" };
+}
+
+$("#f").onsubmit = async e => {
+  e.preventDefault();
+  const btn = $("#ent"), erro = $("#erro");
+  btn.disabled = true; erro.textContent = "";
+  try {
+    const error = await entrar($("#s").value);
+    if (error) {
+      erro.textContent = error.code === "invalid_credentials"
+        ? "Senha incorreta."
+        : error.status === 429 ? "Muitas tentativas. Espere alguns minutos." : "Não foi possível entrar agora. Tente de novo.";
+    } else {
+      localStorage.setItem("peat:entrada", String(Date.now()));
+      $("#s").value = "";
+      const r = await iniciarSessao();
+      if (r !== "ok") { await sb.auth.signOut(); erro.textContent = "Esta senha não tem acesso liberado."; }
+    }
+  } catch { erro.textContent = "Não foi possível carregar os vídeos. Tente de novo."; }
+  btn.disabled = false;
+};
+
+$("#sair").onclick = sair;
+addEventListener("hashchange", () => { if (!$("#app").hidden) abrir(location.hash.slice(1), false); });
+setInterval(() => { if (!$("#app").hidden && !adm && Date.now() - entrada() > DIA) sair(); }, 60000);
+
+(async () => {
+  if (!configurado) {
+    $("#login").hidden = false; $("#ent").disabled = true;
+    $("#erro").textContent = "Falta preencher o arquivo config.js com os dados do Supabase.";
+    return;
+  }
+  sb.auth.onAuthStateChange(ev => { if (ev === "SIGNED_OUT") mostrarLogin(); });
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    try {
+      if (await iniciarSessao() === "ok") return;
+      await sair();   // prazo vencido ou conta sem acesso
+    } catch { /* sem conexão: mantém a sessão e mostra o login */ }
+  }
+  $("#login").hidden = false;
+})();
 </script>
 </body>
 </html>
