@@ -37,6 +37,8 @@ input,textarea{font:inherit;padding:10px 12px;border:1px solid var(--line);borde
 #zm.pan{cursor:grab}#zm.pan.arr{cursor:grabbing;user-select:none}
 #v{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 #sl{position:absolute;inset:0}
+.stage{touch-action:pan-x pan-y}
+@media (pointer:coarse){.btn{min-height:46px;padding:10px 18px;font-size:1.05rem}#nav{gap:12px}li button[data-id]{padding:12px}}
 #cnt,#zr{font-variant-numeric:tabular-nums}
 #zr{min-width:5.5ch}
 .msg{position:absolute;inset:0;z-index:2;display:grid;place-content:center;justify-items:center;gap:12px;padding:20px;text-align:center;color:#fff;background:rgba(0,0,0,.75)}
@@ -405,8 +407,8 @@ function aplicarZoom() {
   $("#zmenos").disabled = Z <= 1; $("#zmais").disabled = Z >= 4;
   P.ajustar();
 }
-function zoom(n) {
-  n = Math.min(4, Math.max(1, Math.round(n * 4) / 4));
+function zoom(n, fino) {
+  n = Math.min(4, Math.max(1, fino ? n : Math.round(n * 4) / 4));
   const w = zm.clientWidth || 1, h = zm.clientHeight || 1;
   const cx = (stage.scrollLeft + stage.clientWidth / 2) / w, cy = (stage.scrollTop + stage.clientHeight / 2) / h;
   Z = n; aplicarZoom();
@@ -415,6 +417,28 @@ function zoom(n) {
 $("#zmais").onclick = () => zoom(Z + .5);
 $("#zmenos").onclick = () => zoom(Z - .5);
 $("#zr").onclick = () => zoom(1);
+// Toque (tablet/celular): pinça com dois dedos para dar zoom; um dedo rola a imagem ampliada
+{
+  const dist = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+  let d0 = 0, z0 = 1;
+  stage.addEventListener("touchstart", e => { if (e.touches.length === 2) { d0 = dist(e.touches); z0 = Z; } }, { passive: true });
+  stage.addEventListener("touchmove", e => {
+    if (e.touches.length !== 2 || !d0) return;
+    e.preventDefault(); zoom(z0 * dist(e.touches) / d0, true);
+  }, { passive: false });
+  stage.addEventListener("touchend", e => { if (e.touches.length < 2) d0 = 0; }, { passive: true });
+}
+// Deslizar o dedo para os lados troca de slide (só quando não está ampliado)
+{
+  let sx = 0, sy = 0, ok = false;
+  const sl = $("#sl");
+  sl.addEventListener("touchstart", e => { ok = e.touches.length === 1 && Z <= 1 && !/^(VIDEO|AUDIO)$/.test(e.target.tagName); if (ok) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; } }, { passive: true });
+  sl.addEventListener("touchend", e => {
+    if (!ok || !P.ativo()) return; ok = false;
+    const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 2) P.ir(P.i + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+}
 // Arrastar com o mouse para mover a apresentação ampliada
 $("#sl").addEventListener("pointerdown", e => {
   if (Z <= 1 || e.pointerType !== "mouse" || e.button !== 0 || /^(VIDEO|AUDIO)$/.test(e.target.tagName)) return;
@@ -486,7 +510,7 @@ async function abrir(id, tocar) {
   atual = x;
   const sl = ehSlides(x);
   $("#t").textContent = x.titulo; $("#d").textContent = x.descricao || "";
-  $("#dica").textContent = sl ? "Use os botões abaixo ou as setas ← → do teclado para trocar de slide. Se o slide tiver um vídeo, clique no play dentro dele." : "Clique no botão de play para assistir. O ícone no canto do vídeo abre em tela cheia.";
+  $("#dica").textContent = sl ? "Troque de slide com os botões abaixo, deslizando o dedo para os lados (tablet) ou com as setas ← → do teclado. Para ampliar, use Zoom + ou faça o gesto de pinça. Se o slide tiver um vídeo, toque no play dentro dele." : "Toque no botão de play para assistir. Para ampliar, use Zoom + ou faça o gesto de pinça com dois dedos.";
   document.title = x.titulo + " – Vídeos Peat";
   list.querySelectorAll("button[data-id]").forEach(b => b.setAttribute("aria-current", String(b.dataset.id === x.id)));
   history.replaceState(null, "", "#" + encodeURIComponent(x.id));
