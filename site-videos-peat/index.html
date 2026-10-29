@@ -32,9 +32,13 @@ input,textarea{font:inherit;padding:10px 12px;border:1px solid var(--line);borde
 .ok{color:var(--green)}
 :is(input,textarea,.ent,.btn,summary,li button[data-id]):focus-visible{outline:3px solid var(--green);outline-offset:2px}
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:32px;align-items:start;padding-bottom:56px}
-.stage{position:relative;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden}
+.stage{position:relative;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:auto}
+#zm{position:relative;width:100%;height:100%;overflow:hidden}
+#zm.pan{cursor:grab}#zm.pan.arr{cursor:grabbing;user-select:none}
 #v{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 #sl{position:absolute;inset:0}
+#cnt,#zr{font-variant-numeric:tabular-nums}
+#zr{min-width:5.5ch}
 .msg{position:absolute;inset:0;z-index:2;display:grid;place-content:center;justify-items:center;gap:12px;padding:20px;text-align:center;color:#fff;background:rgba(0,0,0,.75)}
 .msg p{margin:0;max-width:46ch}
 #nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;padding:12px 0 0}
@@ -107,14 +111,19 @@ textarea{resize:vertical}
     <section>
       <div id="visor">
         <div class="stage" id="stage">
-          <video id="v" controls playsinline preload="metadata"></video>
-          <div id="sl" hidden></div>
+          <div id="zm">
+            <video id="v" controls playsinline preload="metadata"></video>
+            <div id="sl" hidden></div>
+          </div>
           <div class="msg" id="msg" role="status" hidden></div>
         </div>
         <div id="nav" hidden>
           <button class="btn" id="ant" type="button">◀ Slide anterior</button>
           <span id="cnt" aria-live="polite"></span>
           <button class="btn" id="prox" type="button">Próximo slide ▶</button>
+          <button class="btn" id="zmenos" type="button" aria-label="Diminuir o zoom">Zoom −</button>
+          <button class="btn" id="zr" type="button" title="Voltar ao tamanho normal" aria-label="Voltar ao tamanho normal">100%</button>
+          <button class="btn" id="zmais" type="button" aria-label="Aumentar o zoom">Zoom +</button>
           <button class="btn" id="tela" type="button">Tela cheia</button>
         </div>
       </div>
@@ -334,8 +343,8 @@ const P = (() => {
 
   function ajustar() {
     if (!wrap) return;
-    const k = Math.min(stage.clientWidth / W, stage.clientHeight / H) || 1;
-    wrap.style.transform = `scale(${k})`; wrap.style.left = (stage.clientWidth - W * k) / 2 + "px"; wrap.style.top = (stage.clientHeight - H * k) / 2 + "px";
+    const zm = $("#zm"), cw = zm.clientWidth, ch = zm.clientHeight, k = Math.min(cw / W, ch / H) || 1;
+    wrap.style.transform = `scale(${k})`; wrap.style.left = (cw - W * k) / 2 + "px"; wrap.style.top = (ch - H * k) / 2 + "px";
   }
 
   async function ir(n) {
@@ -379,8 +388,41 @@ function msg(t, tentar) {
   const p = el("p", "", m); p.textContent = t;
   if (tentar) { const b = el("button", "", m); b.className = "btn"; b.textContent = "Tentar de novo"; b.onclick = tentar; }
 }
-function modo(m) { v.hidden = m !== "video"; $("#sl").hidden = m !== "slides"; $("#nav").hidden = true; }
-function parar() { v.pause(); v.removeAttribute("src"); v.removeAttribute("poster"); v.load(); P.fechar(); stage.style.aspectRatio = ""; msg(""); }
+function modo(m) {
+  v.hidden = m !== "video"; $("#sl").hidden = m !== "slides"; $("#nav").hidden = m === "msg";
+  for (const s of ["#ant", "#cnt", "#prox"]) $(s).hidden = m !== "slides";
+}
+function parar() { v.pause(); v.removeAttribute("src"); v.removeAttribute("poster"); v.load(); P.fechar(); stage.style.aspectRatio = ""; msg(""); zoom(1); }
+
+// ---------- Zoom (vídeo e apresentação): o quadro cresce e dá para rolar/arrastar para ver cada parte ----------
+let Z = 1;
+const zm = $("#zm");
+function aplicarZoom() {
+  zm.style.width = Z > 1 ? stage.clientWidth * Z + "px" : "100%";
+  zm.style.height = Z > 1 ? stage.clientHeight * Z + "px" : "100%";
+  zm.classList.toggle("pan", Z > 1 && !$("#sl").hidden);
+  $("#zr").textContent = Math.round(Z * 100) + "%";
+  $("#zmenos").disabled = Z <= 1; $("#zmais").disabled = Z >= 4;
+  P.ajustar();
+}
+function zoom(n) {
+  n = Math.min(4, Math.max(1, Math.round(n * 4) / 4));
+  const w = zm.clientWidth || 1, h = zm.clientHeight || 1;
+  const cx = (stage.scrollLeft + stage.clientWidth / 2) / w, cy = (stage.scrollTop + stage.clientHeight / 2) / h;
+  Z = n; aplicarZoom();
+  stage.scrollLeft = cx * zm.clientWidth - stage.clientWidth / 2; stage.scrollTop = cy * zm.clientHeight - stage.clientHeight / 2;
+}
+$("#zmais").onclick = () => zoom(Z + .5);
+$("#zmenos").onclick = () => zoom(Z - .5);
+$("#zr").onclick = () => zoom(1);
+// Arrastar com o mouse para mover a apresentação ampliada
+$("#sl").addEventListener("pointerdown", e => {
+  if (Z <= 1 || e.pointerType !== "mouse" || e.button !== 0 || /^(VIDEO|AUDIO)$/.test(e.target.tagName)) return;
+  let x = e.clientX, y = e.clientY; zm.classList.add("arr");
+  const mv = ev => { stage.scrollLeft -= ev.clientX - x; stage.scrollTop -= ev.clientY - y; x = ev.clientX; y = ev.clientY; };
+  const up = () => { zm.classList.remove("arr"); removeEventListener("pointermove", mv); removeEventListener("pointerup", up); };
+  addEventListener("pointermove", mv); addEventListener("pointerup", up);
+});
 
 async function assinar(caminho, segundos = 4 * 3600) {
   const { data, error } = await sb.storage.from("videos").createSignedUrl(caminho, segundos);
@@ -684,8 +726,8 @@ addEventListener("keydown", e => {
   else return;
   e.preventDefault();
 });
-if (window.ResizeObserver) new ResizeObserver(() => P.ajustar()).observe(stage);
-addEventListener("resize", () => P.ajustar());
+if (window.ResizeObserver) new ResizeObserver(() => aplicarZoom()).observe(stage);
+addEventListener("resize", () => aplicarZoom());
 addEventListener("hashchange", () => { if (!$("#app").hidden) abrir(hash(), false); });
 setInterval(() => { if (!$("#app").hidden && !adm && Date.now() - entrada() > DIA) sair("Por segurança, o acesso vale por 24 horas. Digite a senha de novo."); }, 60000);
 
