@@ -17,50 +17,69 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Public Sa
 .wrap{max-width:1400px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
 header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:22px 0 18px}
 h1{margin:0;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-.02em;color:var(--deep)}
-header p{margin:2px 0 0;color:var(--mute)}
-#sair{font:inherit;background:none;border:1px solid var(--line);border-radius:8px;padding:6px 14px;color:var(--ink);cursor:pointer}
+header p,.sub{margin:2px 0 0;color:var(--mute)}
+.btn{font:inherit;font-weight:600;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 14px;color:var(--ink);cursor:pointer}
+.btn:disabled{opacity:.45;cursor:default}
 #login{min-height:100svh;display:grid;place-items:center;padding:24px}
-#f{width:min(360px,100%);display:grid;gap:14px}
+#f{width:min(380px,100%);display:grid;gap:14px}
 label{display:grid;gap:4px;font-weight:600}
-input{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+label small{font-weight:400;color:var(--mute)}
+input,textarea{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.pw{display:flex;gap:8px}.pw input{flex:1;min-width:0}
 .ent{font:inherit;font-weight:600;padding:11px 14px;border:0;border-radius:8px;background:var(--green);color:var(--on);cursor:pointer}
 .ent:disabled{opacity:.6}
 .erro{min-height:1.5em;margin:0;color:var(--err)}
-:is(input,.ent,#sair):focus-visible{outline:3px solid var(--green);outline-offset:2px}
-.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:32px;align-items:start;padding-bottom:56px}
-.stage{aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden}
-video{display:block;width:100%;height:100%;object-fit:contain}
+.ok{color:var(--green)}
+:is(input,textarea,.ent,.btn,summary,li button[data-id]):focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:32px;align-items:start;padding-bottom:56px}
+.stage{position:relative;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden}
+#v{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+#sl{position:absolute;inset:0}
+.msg{position:absolute;inset:0;z-index:2;display:grid;place-content:center;justify-items:center;gap:12px;padding:20px;text-align:center;color:#fff;background:rgba(0,0,0,.75)}
+.msg p{margin:0;max-width:46ch}
+#nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;padding:12px 0 0}
+#cnt{font-weight:600;min-width:10ch;text-align:center}
+#visor:fullscreen{display:flex;flex-direction:column;background:#000}
+#visor:fullscreen .stage{flex:1;aspect-ratio:auto;border-radius:0}
+#visor:fullscreen #nav{padding:10px;color:#fff}
 h2{margin:18px 0 4px;font-size:1.3rem;font-weight:600}
 .mute{color:var(--mute);margin:0}
+.dica{margin:10px 0 0;color:var(--mute);font-size:.95rem}
 aside{position:sticky;top:16px}
 aside h2{margin:0 0 10px;font-size:1rem}
 ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+li{display:grid;gap:4px}
 li button[data-id]{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:128px 1fr;gap:12px;align-items:center;width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
 li button[data-id]:hover{border-color:var(--green)}
 li button[data-id][aria-current=true]{border-color:var(--green);box-shadow:inset 5px 0 0 var(--yellow)}
-li button[data-id]:focus-visible{outline:3px solid var(--green);outline-offset:2px}
-img{width:128px;aspect-ratio:16/9;object-fit:cover;border-radius:5px;background:#000}
+li button[data-id][aria-current=true] small::after{content:"Aberto agora";display:block;color:var(--green);font-weight:600}
 li strong{display:block;font-weight:600;line-height:1.3}
 li small{color:var(--mute)}
-li{display:grid;gap:4px}
+.th{position:relative;display:grid;place-items:center;aspect-ratio:16/9;background:#000;border-radius:5px;overflow:hidden;color:#fff;font-weight:800;font-size:.8rem}
+.th::before{content:attr(data-t)}
+.th.sl{background:#0b3d2e;color:#ffd23f}
+.th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.badge{display:inline-block;font-style:normal;font-size:.75rem;font-weight:600;padding:1px 8px;border-radius:99px;background:var(--line);color:var(--ink);margin-bottom:2px}
+.badge.sl{background:var(--yellow);color:#12211a}
 .del{justify-self:end;font:inherit;font-size:.8rem;background:none;border:1px solid var(--line);border-radius:6px;padding:3px 10px;color:var(--err);cursor:pointer}
 .del:hover{border-color:var(--err);background:var(--card)}
 #adm{margin:0 0 24px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:0 16px}
 #adm summary{cursor:pointer;font-weight:600;padding:12px 0}
 #fa{display:grid;gap:12px;padding:4px 0 16px;max-width:560px}
-#fa small{font-weight:400;color:var(--mute)}
-textarea{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);resize:vertical}
+textarea{resize:vertical}
 #fa input[type=file]{padding:8px}
-.ok{color:var(--green)}
-:is(textarea,.del,summary):focus-visible{outline:3px solid var(--green);outline-offset:2px}
 @media (max-width:900px){.grid{grid-template-columns:1fr}aside{position:static}}
 </style>
 </head>
 <body>
+<noscript><p style="padding:24px">Ative o JavaScript do navegador para usar este site.</p></noscript>
 <main id="login" hidden>
   <form id="f">
     <h1>Vídeos Peat</h1>
-    <label>Senha<input id="s" type="password" autocomplete="current-password" required autofocus></label>
+    <p class="sub">Área restrita. Digite a senha que você recebeu para assistir aos vídeos e às apresentações.</p>
+    <label>Senha
+      <span class="pw"><input id="s" type="password" autocomplete="current-password" required autofocus><button class="btn" id="ver" type="button" aria-label="Mostrar ou ocultar a senha">Mostrar</button></span>
+    </label>
     <button class="ent" id="ent">Entrar</button>
     <p class="erro" id="erro" role="alert"></p>
   </form>
@@ -69,46 +88,299 @@ textarea{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radi
   <header>
     <div>
       <h1>Vídeos Peat</h1>
-      <p>Escolha um vídeo da lista para assistir.</p>
+      <p>Escolha um vídeo ou uma apresentação na lista e clique para abrir.</p>
     </div>
-    <button id="sair" type="button">Sair</button>
+    <button class="btn" id="sair" type="button">Sair</button>
   </header>
   <details id="adm" hidden>
-    <summary>Administração: adicionar vídeo</summary>
+    <summary>Administração: adicionar vídeo ou apresentação</summary>
     <form id="fa">
+      <label>Arquivo<small>Vídeo (MP4) ou apresentação do PowerPoint (.pptx). Até 50 MB no plano gratuito do Supabase.</small><input id="av" type="file" accept="video/*,.pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" required></label>
       <label>Título<input id="at" type="text" required maxlength="120"></label>
       <label>Descrição (opcional)<textarea id="ad" rows="2" maxlength="500"></textarea></label>
-      <label>Arquivo de vídeo<input id="av" type="file" accept="video/*" required></label>
-      <label>Capa (opcional)<small>Se não escolher, a capa é tirada do próprio vídeo.</small><input id="ac" type="file" accept="image/*"></label>
-      <button class="ent" id="envia" type="submit">Enviar vídeo</button>
+      <label>Imagem de capa (opcional)<small>Se não escolher, usamos uma imagem do próprio vídeo ou do primeiro slide.</small><input id="ac" type="file" accept="image/*"></label>
+      <button class="ent" id="envia" type="submit">Enviar</button>
       <p class="erro" id="aviso" role="status"></p>
     </form>
   </details>
   <div class="grid">
     <section>
-      <div class="stage"><video id="v" controls playsinline preload="metadata"></video></div>
+      <div id="visor">
+        <div class="stage" id="stage">
+          <video id="v" controls playsinline preload="metadata"></video>
+          <div id="sl" hidden></div>
+          <div class="msg" id="msg" role="status" hidden></div>
+        </div>
+        <div id="nav" hidden>
+          <button class="btn" id="ant" type="button">◀ Slide anterior</button>
+          <span id="cnt" aria-live="polite"></span>
+          <button class="btn" id="prox" type="button">Próximo slide ▶</button>
+          <button class="btn" id="tela" type="button">Tela cheia</button>
+        </div>
+      </div>
       <h2 id="t"></h2>
       <p class="mute" id="d"></p>
-      <p class="mute" id="p" hidden></p>
+      <p class="dica" id="dica"></p>
     </section>
     <aside>
-      <h2>Todos os vídeos</h2>
+      <h2 id="qtd">Vídeos e apresentações</h2>
       <ul id="list"></ul>
     </aside>
   </div>
 </div>
 <script src="supabase.js"></script>
+<script src="jszip.min.js"></script>
 <script src="config.js"></script>
 <script>
-const $ = s => document.querySelector(s), v = $("#v"), list = $("#list");
-const DIA = 24 * 60 * 60 * 1000;   // senha comum: o aparelho fica lembrado por 24 h (ADM: sem prazo)
+const $ = s => document.querySelector(s), v = $("#v"), list = $("#list"), stage = $("#stage"), visor = $("#visor");
+const DIA = 864e5, PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
 const cfg = window.PEAT_CONFIG || {};
-const configurado = /^https:\/\/.+\.supabase\.co\/?$/.test(cfg.url || "") && !/COLE/.test(cfg.url) && !!cfg.chave && !/COLE/.test(cfg.chave)
-  && !!cfg.emailComum && !!cfg.emailAdm;
-const sb = configurado ? supabase.createClient(cfg.url, cfg.chave) : null;
-let catalogo = [], atual = null, adm = false, renovando = false;
+const configurado = /^https:\/\/.+\.supabase\.co\/?$/.test(cfg.url || "") && !/COLE/.test(cfg.url) && !!cfg.chave && !/COLE/.test(cfg.chave) && !!cfg.emailComum && !!cfg.emailAdm;
+let sb = null;
+try { if (configurado && window.supabase) sb = supabase.createClient(cfg.url, cfg.chave); } catch (e) { console.error(e); }
+let catalogo = [], atual = null, adm = false, renovando = false, enviando = false, mem = 0;
 
-const entrada = () => Number(localStorage.getItem("peat:entrada") || 0);
+// Guarda a hora do login (o aparelho fica lembrado por 24 h; ADM sem prazo). Funciona mesmo se o navegador bloquear o armazenamento.
+const ls = {
+  get: k => { try { return localStorage.getItem(k); } catch { return null; } },
+  set: (k, x) => { try { localStorage.setItem(k, x); } catch {} },
+  del: k => { try { localStorage.removeItem(k); } catch {} }
+};
+const entrada = () => Number(ls.get("peat:entrada")) || mem;
+const marcar = () => { mem = Date.now(); ls.set("peat:entrada", String(mem)); };
+const ehSlides = x => /\.pptx$/i.test(x.arquivo || "");
+const hash = () => { try { return decodeURIComponent(location.hash.slice(1)); } catch { return ""; } };
+const el = (tag, css, pai) => { const e = document.createElement(tag); if (css) e.style.cssText = css; if (pai) pai.append(e); return e; };
+
+// ---------- Leitor de PowerPoint (.pptx): tudo é desenhado aqui dentro da página ----------
+const P = (() => {
+  const EMU = 9525, R = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+  const MIME = { png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif", svg: "image/svg+xml", webp: "image/webp", bmp: "image/bmp", mp4: "video/mp4", m4v: "video/mp4", mov: "video/mp4", webm: "video/webm", ogv: "video/ogg", mp3: "audio/mpeg", m4a: "audio/mp4", wav: "audio/wav", ogg: "audio/ogg" };
+  const qa = (n, t) => [...n.getElementsByTagNameNS("*", t)], q1 = (n, t) => (n && n.getElementsByTagNameNS("*", t)[0]) || null;
+  const kid = (n, t) => (n && [...n.children].find(c => c.localName === t)) || null, kids = (n, t) => n ? [...n.children].filter(c => c.localName === t) : [];
+  const at = (n, a, d) => n && n.hasAttribute(a) ? n.getAttribute(a) : d, rid = (n, a) => (n && n.getAttributeNS(R, a)) || null;
+  let z = null, slides = [], W = 960, H = 540, th = {}, cache = new Map(), urls = [], velhas = [], i = 0, tok = 0, MAS = null, wrap = null;
+  const dir = p => p.slice(0, p.lastIndexOf("/") + 1);
+  const norm = p => p.split("/").reduce((o, s) => (s === ".." ? o.pop() : s && s !== "." && o.push(s), o), []).join("/");
+  const X = s => { const d = new DOMParser().parseFromString(s, "application/xml"); if (d.getElementsByTagName("parsererror").length) throw new Error("XML inválido"); return d; };
+  const txt = async p => { const f = z.file(p); if (!f) throw new Error("Falta " + p); return X(await f.async("string")); };
+  async function rels(p) {
+    const f = z.file(dir(p) + "_rels/" + p.slice(dir(p).length) + ".rels"), m = {};
+    if (f) for (const e of qa(X(await f.async("string")), "Relationship")) {
+      const t = e.getAttribute("Target"), ext = e.getAttribute("TargetMode") === "External";
+      m[e.getAttribute("Id")] = { ty: e.getAttribute("Type"), ext, t: ext ? t : norm(t[0] === "/" ? t : dir(p) + t) };
+    }
+    return m;
+  }
+  async function carregar(p) {
+    if (!p) return null;
+    if (!cache.has(p)) { if (!z.file(p)) return null; cache.set(p, { x: await txt(p), r: await rels(p) }); }
+    return cache.get(p);
+  }
+  const rel = (d, re) => d && Object.values(d.r).find(r => re.test(r.ty));
+  async function url(p) {
+    const f = z.file(p); if (!f) return "";
+    const b = await f.async("blob"), u = URL.createObjectURL(b.slice(0, b.size, MIME[p.split(".").pop().toLowerCase()] || b.type));
+    urls.push(u); return u;
+  }
+  function cor(f) {   // cor do PowerPoint (tema, luminosidade e transparência) em CSS
+    const c = f && (/Clr$/.test(f.localName) ? f : [...f.children].find(e => /Clr$/.test(e.localName)));
+    if (!c) return null;
+    const k = c.localName, val = c.getAttribute("val"), hex = k === "srgbClr" ? val : k === "sysClr" ? c.getAttribute("lastClr") : k === "schemeClr" ? th[val] : null;
+    if (!hex || hex.length < 6) return null;
+    let [r, g, b] = [0, 2, 4].map(j => parseInt(hex.substr(j, 2), 16) / 255);
+    const m = kid(c, "lumMod"), o = kid(c, "lumOff");
+    if (m || o) {
+      const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+      let l = (mx + mn) / 2, h = 0, s = 0;
+      if (d) { s = d / (1 - Math.abs(2 * l - 1)); h = mx === r ? ((g - b) / d + 6) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; }
+      l = Math.min(1, Math.max(0, l * (m ? m.getAttribute("val") / 1e5 : 1) + (o ? o.getAttribute("val") / 1e5 : 0)));
+      const a = s * Math.min(l, 1 - l), f2 = n => { const q = (n + h * 2) % 12; return l - a * Math.max(-1, Math.min(q - 3, 9 - q, 1)); };
+      [r, g, b] = [f2(0), f2(8), f2(4)];
+    }
+    const al = kid(c, "alpha"), rgb = [r, g, b].map(x => Math.round(x * 255)).join(",");
+    return al ? `rgba(${rgb},${al.getAttribute("val") / 1e5})` : `rgb(${rgb})`;
+  }
+  const xfOf = n => kid(kid(n, "spPr"), "xfrm") || kid(kid(n, "grpSpPr"), "xfrm") || kid(n, "xfrm");
+  const rect = x => { const o = kid(x, "off"), e = kid(x, "ext"); return o && e ? { x: +o.getAttribute("x"), y: +o.getAttribute("y"), w: +e.getAttribute("cx"), h: +e.getAttribute("cy"), r: +at(x, "rot", 0) / 6e4, fh: at(x, "flipH") === "1", fv: at(x, "flipV") === "1" } : null; };
+  const mapR = (g, r) => ({ ...r, x: g.x0 + (r.x - g.cx0) * g.sx, y: g.y0 + (r.y - g.cy0) * g.sy, w: r.w * g.sx, h: r.h * g.sy });
+  const pos = r => `position:absolute;left:${r.x / EMU}px;top:${r.y / EMU}px;width:${r.w / EMU}px;height:${r.h / EMU}px;box-sizing:border-box;` + (r.r || r.fh || r.fv ? `transform:rotate(${r.r}deg) scale(${r.fh ? -1 : 1},${r.fv ? -1 : 1});` : "");
+  const nota = (pai, t) => { el("div", "position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:8px;background:rgba(0,0,0,.75);color:#fff;font:14px sans-serif", pai).textContent = t; };
+  const T = p => { const t = at(p, "type", "body"); return t === "ctrTitle" ? "title" : t === "subTitle" ? "body" : t; };
+  const achar = (d, p, soTipo) => d && qa(d.x, "sp").find(s => { const q = q1(s, "ph"); return q && ((!soTipo && at(p, "idx") != null && at(q, "idx") === at(p, "idx")) || (T(q) === T(p) && (soTipo || at(p, "idx") == null))); }) || null;
+
+  function texto(tb, box, o) {
+    const bp = kid(tb, "bodyPr"), ph = o.ph, tp = ph ? T(ph) : "outro", st = tp === "title" ? "titleStyle" : /^(body|obj)$/.test(tp) ? "bodyStyle" : "otherStyle";
+    const bpo = s => kid(kid(s, "txBody"), "bodyPr"), anc = [bp, bpo(o.lay), bpo(o.mas)].map(b => at(b, "anchor")).find(Boolean) || "t";
+    const af = kid(bp, "normAutofit"), fs = af ? +at(af, "fontScale", 1e5) / 1e5 : 1;
+    const w = o.cell ? box : el("div", `position:absolute;inset:0;display:flex;flex-direction:column;justify-content:${{ ctr: "center", b: "flex-end" }[anc] || "flex-start"};padding:${at(bp, "tIns", 45720) / EMU}px ${at(bp, "rIns", 91440) / EMU}px ${at(bp, "bIns", 45720) / EMU}px ${at(bp, "lIns", 91440) / EMU}px`, box);
+    if (at(bp, "wrap") === "none") w.style.whiteSpace = "nowrap";
+    let num = 0;
+    kids(tb, "p").forEach((p, pi) => {
+      const pp = kid(p, "pPr"), L = `lvl${+at(pp, "lvl", 0) + 1}pPr`, ts = MAS && kid(q1(MAS, "txStyles"), st);
+      const cad = [...[o.n, o.lay, o.mas].map(s => kid(kid(kid(s, "txBody"), "lstStyle"), L)), kid(ts, L)].filter(Boolean);
+      const dr = c => kid(c, "defRPr"), herda = k => at(pp, k) ?? cad.map(c => at(c, k)).find(x => x != null);
+      const bu = [pp, ...cad].map(c => kid(c, "buNone") || kid(c, "buChar") || kid(c, "buAutoNum")).find(Boolean);
+      num = bu && bu.localName === "buAutoNum" ? num + 1 : 0;
+      const alg = herda("algn") || "l", ml = (+herda("marL") || 0) / EMU, ind = (+herda("indent") || 0) / EMU;
+      const base = +(at(kid(p, "endParaRPr"), "sz") ?? cad.map(c => at(dr(c), "sz")).find(x => x != null) ?? 1800);
+      const e = el("div", `text-align:${{ ctr: "center", r: "right", just: "justify" }[alg] || "left"};padding-left:${ml}px;text-indent:${ind}px;margin-top:${pi ? ".2em" : 0};font-size:${base / 75 * fs}px`, w);
+      for (const rn of p.children) {
+        if (rn.localName === "br") { e.append(document.createElement("br")); continue; }
+        const t = (rn.localName === "r" || rn.localName === "fld") && kid(rn, "t"); if (!t) continue;
+        const rp = kid(rn, "rPr"), g = k => at(rp, k) ?? cad.map(c => at(dr(c), k)).find(x => x != null);
+        const sp = el("span", `font-size:${(+g("sz") || 1800) / 75 * fs}px`, e); sp.textContent = t.textContent;
+        if (g("b") === "1") sp.style.fontWeight = "700";
+        if (g("i") === "1") sp.style.fontStyle = "italic";
+        if (/^(sng|dbl)/.test(g("u") || "")) sp.style.textDecoration = "underline";
+        const c = cor(kid(rp, "solidFill")) || cad.map(q => cor(kid(dr(q), "solidFill"))).find(Boolean); if (c) sp.style.color = c;
+        const ft = at(kid(rp, "latin"), "typeface"); if (ft && ft[0] !== "+") sp.style.fontFamily = `"${ft.replace(/"/g, "")}",Calibri,Carlito,Arial,sans-serif`;
+      }
+      if (!e.textContent) e.append("\u200b");
+      else if (bu && bu.localName !== "buNone") { const ch = bu.getAttribute("char") || "•"; e.prepend(bu.localName === "buChar" ? (/[A-Za-z§Øüý¨]/.test(ch) ? "•" : ch) + " " : num + ". "); }
+    });
+  }
+
+  async function forma(n, g, d, s, ctx, decor) {
+    const ph = q1(kid(kid(n, "nvSpPr"), "nvPr"), "ph");
+    if (ph && decor) return;   // marcadores do layout/mestre (títulos, rodapés) não aparecem
+    let r = rect(xfOf(n)), lay = null, mas = null;
+    if (ph) { lay = achar(ctx.lay, ph); mas = achar(ctx.mas, ph, true); r = r || rect(xfOf(lay)) || rect(xfOf(mas)); }
+    if (!r) return;
+    const pr = kid(n, "spPr"), ln = kid(pr, "ln"), lf = kid(ln, "solidFill"), geo = at(q1(pr, "prstGeom"), "prst");
+    const f = kid(pr, "noFill") ? null : kid(pr, "solidFill") || kid(kid(lay, "spPr"), "solidFill") || kid(kid(mas, "spPr"), "solidFill");
+    const box = el("div", pos(mapR(g, r)) + `color:#${th.tx1 || "000"}`, s);
+    if (f) box.style.background = cor(f);
+    if (lf) box.style.border = `${Math.max(1, +at(ln, "w", 12700) / EMU)}px solid ${cor(lf)}`;
+    if (geo === "ellipse") box.style.borderRadius = "50%"; else if (geo === "roundRect") box.style.borderRadius = "12%";
+    const tb = kid(n, "txBody"); if (tb) texto(tb, box, { n, ph, lay, mas });
+  }
+
+  async function figura(n, g, d, s, ctx) {   // imagens, vídeos e áudios
+    const r = rect(xfOf(n)); if (!r) return;
+    const box = el("div", pos(mapR(g, r)) + "overflow:hidden", s), nvp = kid(kid(n, "nvPicPr"), "nvPr"), bf = kid(n, "blipFill");
+    const im = d.r[rid(q1(bf, "blip"), "embed")], vf = q1(nvp, "videoFile"), af = q1(nvp, "audioFile"), mf = vf || af;
+    const mr = mf && (d.r[rid(q1(nvp, "media"), "embed")] || d.r[rid(mf, "link")]);
+    const capa = im && !im.ext && /\.(png|jpe?g|gif|webp|svg|bmp)$/i.test(im.t) ? await url(im.t) : "";
+    if (mr) {
+      const m = el(vf ? "video" : "audio", "position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000", box);
+      m.controls = true; m.preload = "metadata"; m.playsInline = true; if (vf && capa) m.poster = capa;
+      m.onerror = () => { if (m.getAttribute("src")) nota(box, "Este vídeo está em um formato que o navegador não toca. Converta para MP4 (H.264) e insira de novo no PowerPoint."); };
+      if (mr.ext) { if (/^https:\/\//i.test(mr.t)) m.src = mr.t; else nota(box, "Este vídeo está vinculado a um arquivo fora do PowerPoint e não pode ser exibido aqui."); }
+      else url(mr.t).then(u => ctx.vivo() ? (m.src = u) : URL.revokeObjectURL(u));
+      return;
+    }
+    if (!capa) return;
+    const img = el("img", "position:absolute;width:100%;height:100%;left:0;top:0", box), sr = q1(bf, "srcRect");
+    img.alt = ""; img.src = capa;
+    if (sr) { const [l, t, rr, b] = ["l", "t", "r", "b"].map(k => +at(sr, k, 0) / 1e5), w = 1 - l - rr, h = 1 - t - b; if (w > 0 && h > 0) Object.assign(img.style, { width: 100 / w + "%", height: 100 / h + "%", left: -l / w * 100 + "%", top: -t / h * 100 + "%" }); }
+  }
+
+  async function quadro(n, g, d, s) {   // tabelas (gráficos e SmartArt só avisam)
+    const r = rect(xfOf(n)); if (!r) return;
+    const box = el("div", pos(mapR(g, r)), s), tbl = q1(n, "tbl");
+    if (!tbl) { box.style.cssText += "border:1px dashed #888;display:grid;place-items:center;font:16px sans-serif;color:#666;text-align:center"; box.textContent = "Gráfico ou objeto que só abre no PowerPoint"; return; }
+    const t = el("table", "width:100%;border-collapse:collapse;table-layout:fixed", box), cg = el("colgroup", "", t), fr = at(kid(tbl, "tblPr"), "firstRow") === "1";
+    for (const c of kids(kid(tbl, "tblGrid"), "gridCol")) el("col", `width:${c.getAttribute("w") / EMU}px`, cg);
+    kids(tbl, "tr").forEach((tr, ri) => {
+      const row = el("tr", `height:${at(tr, "h", 0) / EMU}px`, t);
+      for (const tc of kids(tr, "tc")) {
+        if (at(tc, "hMerge") === "1" || at(tc, "vMerge") === "1") continue;
+        const td = el("td", "border:1px solid rgba(128,128,128,.45);padding:4px 8px;vertical-align:middle;overflow:hidden", row), f = kid(kid(tc, "tcPr"), "solidFill");
+        td.colSpan = +at(tc, "gridSpan", 1); td.rowSpan = +at(tc, "rowSpan", 1); td.style.color = `#${th.tx1 || "000"}`;
+        if (f) td.style.background = cor(f); else if (fr && !ri) { td.style.background = `#${th.accent1 || "444"}`; td.style.color = "#fff"; td.style.fontWeight = "700"; }
+        const tb = kid(tc, "txBody"); if (tb) texto(tb, td, { cell: true });
+      }
+    });
+  }
+
+  async function arvore(d, s, ctx, decor) {
+    const tree = q1(d.x, "spTree"); if (!tree) return;
+    const walk = async (nodes, g) => {
+      for (const n of nodes) {
+        try {   // um elemento com problema não derruba o slide inteiro
+          const k = n.localName;
+          if (k === "grpSp") {
+            const gx = kid(kid(n, "grpSpPr"), "xfrm"), r = rect(gx), co = kid(gx, "chOff"), ce = kid(gx, "chExt");
+            if (r && co && ce) { const m = mapR(g, r); await walk([...n.children], { x0: m.x, y0: m.y, cx0: +co.getAttribute("x"), cy0: +co.getAttribute("y"), sx: m.w / (+ce.getAttribute("cx") || m.w || 1), sy: m.h / (+ce.getAttribute("cy") || m.h || 1) }); }
+          } else if (k === "sp") await forma(n, g, d, s, ctx, decor);
+          else if (k === "pic") await figura(n, g, d, s, ctx);
+          else if (k === "graphicFrame" && !decor) await quadro(n, g, d, s);
+        } catch (e) { console.warn("Elemento ignorado:", e); }
+      }
+    };
+    await walk([...tree.children], { x0: 0, y0: 0, cx0: 0, cy0: 0, sx: 1, sy: 1 });
+  }
+
+  async function fundo(s, d) {
+    const bg = d && q1(d.x, "bg"); if (!bg) return false;
+    const im = q1(bg, "blip"), rr = im && d.r[rid(im, "embed")];
+    if (rr && !rr.ext) { const u = await url(rr.t); if (u) { s.style.background = `url("${u}") center/cover`; return true; } }
+    const c = cor(q1(bg, "solidFill") || q1(bg, "bgRef"));
+    if (c) { s.style.background = c; return true; }
+    return false;
+  }
+
+  async function montar(n, my) {
+    const d = await carregar(slides[n]), lay = await carregar(rel(d, /\/slideLayout$/)?.t), mas = await carregar(rel(lay, /\/slideMaster$/)?.t);
+    MAS = mas && mas.x;
+    const cm = q1(MAS, "clrMap"); if (cm) for (const k of ["bg1", "tx1", "bg2", "tx2"]) if (th[cm.getAttribute(k)]) th[k] = th[cm.getAttribute(k)];
+    const s = el("div", `position:absolute;left:0;top:0;width:${W}px;height:${H}px;overflow:hidden;transform-origin:0 0;background:#${th.bg1 || "fff"};font-family:Calibri,Carlito,Arial,sans-serif;line-height:1.2`), ctx = { lay, mas, vivo: () => my === tok };
+    for (const dd of [d, lay, mas]) if (await fundo(s, dd)) break;
+    if (at(d.x.documentElement, "showMasterSp") !== "0") for (const dd of [mas, lay]) if (dd) await arvore(dd, s, ctx, true);
+    await arvore(d, s, ctx, false);
+    return s;
+  }
+
+  function ajustar() {
+    if (!wrap) return;
+    const k = Math.min(stage.clientWidth / W, stage.clientHeight / H) || 1;
+    wrap.style.transform = `scale(${k})`; wrap.style.left = (stage.clientWidth - W * k) / 2 + "px"; wrap.style.top = (stage.clientHeight - H * k) / 2 + "px";
+  }
+
+  async function ir(n) {
+    if (!slides.length) return;
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    const my = ++tok; velhas.push(...urls.splice(0));
+    $("#cnt").textContent = `Slide ${i + 1} de ${slides.length}`; $("#ant").disabled = !i; $("#prox").disabled = i === slides.length - 1;
+    let s;
+    try { s = await montar(i, my); } catch (e) {
+      console.warn(e);
+      s = el("div", `position:absolute;left:0;top:0;width:${W}px;height:${H}px;background:#fff;display:grid;place-items:center;font:28px sans-serif;color:#555;transform-origin:0 0`); s.textContent = "Não foi possível exibir este slide.";
+    }
+    if (my !== tok) return;
+    $("#sl").replaceChildren(s); wrap = s; ajustar();
+    velhas.splice(0).forEach(u => URL.revokeObjectURL(u));
+  }
+
+  function fechar() { tok++; z = null; slides = []; cache.clear(); wrap = null; velhas.push(...urls.splice(0)); velhas.splice(0).forEach(u => URL.revokeObjectURL(u)); $("#sl").replaceChildren(); }
+
+  async function abrir(buf) {
+    if (typeof JSZip === "undefined") throw new Error("jszip");
+    fechar();
+    z = await JSZip.loadAsync(buf);
+    const px = await txt("ppt/presentation.xml").catch(() => { throw new Error("pptx"); }), pr = await rels("ppt/presentation.xml"), sz = q1(px, "sldSz");
+    W = +at(sz, "cx", 0) / EMU; H = +at(sz, "cy", 0) / EMU;
+    slides = qa(px, "sldId").map(e => pr[rid(e, "id")]).filter(Boolean).map(r => r.t);
+    if (!slides.length || !(W > 0 && H > 0)) throw new Error("pptx");
+    const tr = rel({ r: pr }, /\/theme$/), cs = tr && z.file(tr.t) ? q1(await txt(tr.t), "clrScheme") : null;
+    th = {};
+    for (const e of cs ? [...cs.children] : []) { const c = e.firstElementChild; if (c) th[e.localName] = c.localName === "sysClr" ? c.getAttribute("lastClr") : c.getAttribute("val"); }
+    Object.assign(th, { tx1: th.dk1, bg1: th.lt1, tx2: th.dk2, bg2: th.lt2 });
+  }
+
+  return { abrir, ir, fechar, ajustar, ativo: () => slides.length > 0 && !$("#sl").hidden, get i() { return i; }, razao: () => `${W} / ${H}` };
+})();
+
+// ---------- Tela: mensagens e modos ----------
+function msg(t, tentar) {
+  const m = $("#msg"); m.hidden = !t; m.replaceChildren();
+  if (!t) return;
+  const p = el("p", "", m); p.textContent = t;
+  if (tentar) { const b = el("button", "", m); b.className = "btn"; b.textContent = "Tentar de novo"; b.onclick = tentar; }
+}
+function modo(m) { v.hidden = m !== "video"; $("#sl").hidden = m !== "slides"; $("#nav").hidden = true; }
+function parar() { v.pause(); v.removeAttribute("src"); v.removeAttribute("poster"); v.load(); P.fechar(); stage.style.aspectRatio = ""; msg(""); }
 
 async function assinar(caminho, segundos = 4 * 3600) {
   const { data, error } = await sb.storage.from("videos").createSignedUrl(caminho, segundos);
@@ -116,80 +388,122 @@ async function assinar(caminho, segundos = 4 * 3600) {
   return data.signedUrl;
 }
 
-function limparVideo() { v.pause(); v.removeAttribute("src"); v.removeAttribute("poster"); v.load(); }
+async function baixar(r, andamento) {   // baixa o arquivo mostrando a porcentagem
+  const total = +r.headers.get("content-length") || 0;
+  if (!r.body || !total) return r.arrayBuffer();
+  const rd = r.body.getReader(), partes = []; let n = 0;
+  for (;;) { const { done, value } = await rd.read(); if (done) break; partes.push(value); n += value.length; andamento(Math.min(100, Math.round(n / total * 100))); }
+  const out = new Uint8Array(n); let o = 0;
+  for (const p of partes) { out.set(p, o); o += p.length; }
+  return out.buffer;
+}
 
 function mostrarLogin() {
-  limparVideo();
+  parar();
   $("#app").hidden = true; $("#adm").hidden = true; $("#login").hidden = false;
   list.replaceChildren(); catalogo = []; atual = null; adm = false;
 }
 
-async function sair() {
-  await sb.auth.signOut();
-  localStorage.removeItem("peat:entrada");
+async function sair(motivo) {
+  try { await sb.auth.signOut(); } catch (e) { console.warn(e); }
+  ls.del("peat:entrada"); mem = 0;
   history.replaceState(null, "", location.pathname);
   mostrarLogin();
+  $("#erro").textContent = motivo || "";
+}
+
+async function abrirVideo(x, tocar) {
+  modo("video"); msg("Carregando o vídeo…"); v.poster = x.capaUrl || "";
+  const url = await assinar(x.arquivo);
+  if (atual !== x) return;
+  v.src = url;
+  if (tocar) v.play().catch(() => {});
+}
+
+async function abrirSlides(x, tocar) {
+  modo("slides"); msg("Carregando a apresentação…");
+  const r = await fetch(await assinar(x.arquivo));
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  const buf = await baixar(r, p => { if (atual === x) msg(`Carregando a apresentação… ${p}%`); });
+  if (atual !== x) return;
+  await P.abrir(buf);
+  if (atual !== x) return;
+  stage.style.aspectRatio = P.razao(); $("#nav").hidden = false; msg("");
+  await P.ir(0);
 }
 
 async function abrir(id, tocar) {
   const x = catalogo.find(i => i.id === id) || catalogo[0];
-  const p = $("#p");
+  parar();
   if (!x) {
-    atual = null; limparVideo(); document.title = "Vídeos Peat";
-    $("#t").textContent = "Nenhum vídeo disponível ainda."; $("#d").textContent = ""; p.hidden = true;
+    atual = null; modo("msg"); document.title = "Vídeos Peat";
+    $("#t").textContent = "Ainda não há nada por aqui"; $("#d").textContent = ""; $("#dica").textContent = "";
+    msg(adm ? "Abra “Administração” acima para enviar o primeiro vídeo ou a primeira apresentação." : "Nenhum vídeo ou apresentação foi publicado ainda. Volte mais tarde.");
     return;
   }
   atual = x;
-  $("#t").textContent = x.titulo; $("#d").textContent = x.descricao;
+  const sl = ehSlides(x);
+  $("#t").textContent = x.titulo; $("#d").textContent = x.descricao || "";
+  $("#dica").textContent = sl ? "Use os botões abaixo ou as setas ← → do teclado para trocar de slide. Se o slide tiver um vídeo, clique no play dentro dele." : "Clique no botão de play para assistir. O ícone no canto do vídeo abre em tela cheia.";
   document.title = x.titulo + " – Vídeos Peat";
   list.querySelectorAll("button[data-id]").forEach(b => b.setAttribute("aria-current", String(b.dataset.id === x.id)));
-  history.replaceState(null, "", "#" + x.id);
-  v.pause(); v.removeAttribute("src"); v.load(); v.poster = x.capaUrl || ""; p.hidden = true;
-  if (tocar) v.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
-  try {
-    const url = await assinar(x.arquivo);
-    if (atual !== x) return;   // trocou de vídeo enquanto o link era gerado
-    v.src = url;
-    if (tocar) v.play().catch(() => {});
-  } catch { if (atual === x) { p.hidden = false; p.textContent = "Não foi possível carregar o vídeo."; } }
+  history.replaceState(null, "", "#" + encodeURIComponent(x.id));
+  if (tocar) stage.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+  try { if (sl) await abrirSlides(x, tocar); else await abrirVideo(x, tocar); }
+  catch (e) {
+    console.warn(e);
+    if (atual !== x) return;
+    modo("msg");
+    const m = String(e && e.message || "");
+    msg(m === "jszip" ? "Falta enviar o arquivo jszip.min.js para o site (veja as instruções do administrador)."
+      : m === "pptx" ? "Este arquivo não é uma apresentação .pptx válida."
+      : "Não foi possível carregar. Verifique a internet e tente de novo.", m === "pptx" ? null : () => abrir(x.id, tocar));
+  }
 }
 
 // Se o link do vídeo expirar (ex.: pausa muito longa), gera outro e volta ao mesmo ponto.
+v.addEventListener("loadeddata", () => msg(""));
 v.addEventListener("error", async () => {
-  if (!atual || !v.getAttribute("src") || renovando) return;
-  renovando = true;
+  if (!atual || !v.getAttribute("src")) return;
   const x = atual, t = v.currentTime;
+  if (renovando) { msg("Não foi possível reproduzir este vídeo. Se continuar assim, o arquivo pode estar em um formato que o navegador não abre (o ideal é MP4).", () => abrir(x.id, false)); return; }
+  renovando = true;
   try {
     v.src = await assinar(x.arquivo);
     v.addEventListener("loadedmetadata", () => { v.currentTime = t; }, { once: true });
-  } catch { /* segue com o erro na tela */ }
+  } catch { msg("Não foi possível carregar o vídeo. Verifique a internet.", () => abrir(x.id, false)); }
   setTimeout(() => { renovando = false; }, 10000);
 });
 
 async function abrirApp(abrirId) {
   const { data, error } = await sb.from("catalogo").select("id,titulo,descricao,duracao,arquivo,capa,ordem").order("ordem");
   if (error) throw error;
-  catalogo = data;
+  catalogo = data || [];
   list.replaceChildren();
   for (const x of catalogo) {
-    const li = document.createElement("li"), b = document.createElement("button");
+    const li = document.createElement("li"), b = document.createElement("button"), sl = ehSlides(x);
     b.type = "button"; b.dataset.id = x.id;
-    b.innerHTML = '<img alt=""><span><strong></strong><small></small></span>';
+    b.innerHTML = '<span class="th"><img alt=""></span><span><em class="badge"></em><strong></strong><small></small></span>';
+    const th = b.querySelector(".th"), bd = b.querySelector(".badge");
+    th.dataset.t = sl ? "Slides" : "▶"; th.classList.toggle("sl", sl);
+    bd.textContent = sl ? "Apresentação" : "Vídeo"; bd.classList.toggle("sl", sl);
+    b.querySelector("img").onerror = e => e.target.removeAttribute("src");
     b.querySelector("strong").textContent = x.titulo;
-    b.querySelector("small").textContent = x.duracao;
+    b.querySelector("small").textContent = x.duracao || "";
     b.onclick = () => abrir(x.id, true);
     li.append(b);
     if (adm) {
       const d = document.createElement("button");
       d.type = "button"; d.className = "del"; d.textContent = "Excluir";
-      d.setAttribute("aria-label", "Excluir o vídeo " + x.titulo);
+      d.setAttribute("aria-label", "Excluir " + x.titulo);
       d.onclick = () => excluir(x);
       li.append(d);
     }
     list.append(li);
   }
+  $("#qtd").textContent = `Vídeos e apresentações (${catalogo.length})`;
   $("#login").hidden = true; $("#app").hidden = false; $("#adm").hidden = !adm;
-  abrir(abrirId ?? location.hash.slice(1), false);
+  abrir(abrirId ?? hash(), false);
   const caminhos = catalogo.map(x => x.capa).filter(Boolean);
   if (!caminhos.length) return;
   sb.storage.from("videos").createSignedUrls(caminhos, 3600).then(({ data: urls }) => {
@@ -198,7 +512,7 @@ async function abrirApp(abrirId) {
       if (i < 0 || !u.signedUrl) return;
       catalogo[i].capaUrl = u.signedUrl;
       list.children[i].querySelector("img").src = u.signedUrl;
-      if (atual === catalogo[i]) v.poster = u.signedUrl;
+      if (atual === catalogo[i] && !ehSlides(atual)) v.poster = u.signedUrl;
     });
   }).catch(() => {});
 }
@@ -214,61 +528,81 @@ async function iniciarSessao() {
   return "ok";
 }
 
-// ---------- ADM: adicionar e excluir vídeos ----------
+// ---------- ADM: adicionar e excluir ----------
 const aviso = (txt, ok) => { const a = $("#aviso"); a.textContent = txt; a.classList.toggle("ok", !!ok); };
 
 function slug(t) {
-  return t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
+  return t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
     .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40) || "video";
 }
 
 // Lê a duração e tira uma imagem do vídeo (para a capa), tudo no navegador.
 function lerVideo(arquivo) {
   return new Promise(resolve => {
-    const el = document.createElement("video"), url = URL.createObjectURL(arquivo);
+    const e = document.createElement("video"), u = URL.createObjectURL(arquivo);
     let duracao = "", feito = false;
-    const fim = capa => { if (feito) return; feito = true; URL.revokeObjectURL(url); resolve({ duracao, capa }); };
-    el.muted = true; el.preload = "metadata"; el.playsInline = true;
-    el.onerror = () => fim(null);
-    el.onloadedmetadata = () => {
-      const t = Math.round(el.duration || 0);
+    const fim = capa => { if (feito) return; feito = true; URL.revokeObjectURL(u); resolve({ duracao, capa }); };
+    e.muted = true; e.preload = "metadata"; e.playsInline = true;
+    e.onerror = () => fim(null);
+    e.onloadedmetadata = () => {
+      const t = Math.round(e.duration || 0);
       duracao = isFinite(t) && t > 0 ? `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}` : "";
-      el.currentTime = Math.min(20, (el.duration || 2) / 2);
+      e.currentTime = Math.min(20, (e.duration || 2) / 2);
     };
-    el.onseeked = () => {
+    e.onseeked = () => {
       try {
         const c = document.createElement("canvas");
-        c.width = 640; c.height = Math.round(640 * (el.videoHeight || 360) / (el.videoWidth || 640));
-        c.getContext("2d").drawImage(el, 0, 0, c.width, c.height);
+        c.width = 640; c.height = Math.round(640 * (e.videoHeight || 360) / (e.videoWidth || 640));
+        c.getContext("2d").drawImage(e, 0, 0, c.width, c.height);
         c.toBlob(b => fim(b), "image/jpeg", 0.8);
       } catch { fim(null); }
     };
     setTimeout(() => fim(null), 15000);
-    el.src = url;
+    e.src = u;
   });
 }
+
+// Conta os slides e usa a miniatura que o PowerPoint guarda dentro do arquivo como capa.
+async function lerPptx(arq) {
+  if (typeof JSZip === "undefined") throw new Error("Falta enviar o arquivo jszip.min.js para o site.");
+  const invalido = new Error("O arquivo não parece ser uma apresentação .pptx válida.");
+  let zz; try { zz = await JSZip.loadAsync(arq); } catch { throw invalido; }
+  if (!zz.file("ppt/presentation.xml")) throw invalido;
+  const n = Object.keys(zz.files).filter(f => /^ppt\/slides\/slide\d+\.xml$/.test(f)).length, mini = zz.file("docProps/thumbnail.jpeg");
+  let capa = null;
+  if (mini) { const b = await mini.async("blob"); capa = b.slice(0, b.size, "image/jpeg"); }
+  return { duracao: n + (n === 1 ? " slide" : " slides"), capa };
+}
+
+addEventListener("beforeunload", e => { if (enviando) { e.preventDefault(); e.returnValue = ""; } });
+$("#av").onchange = () => {
+  const f = $("#av").files[0];
+  if (f && !$("#at").value) $("#at").value = f.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").slice(0, 120);
+};
 
 $("#fa").onsubmit = async e => {
   e.preventDefault();
   const btn = $("#envia"), titulo = $("#at").value.trim(), descricao = $("#ad").value.trim();
   const vf = $("#av").files[0], cf = $("#ac").files[0];
   if (!titulo || !vf) return;
-  btn.disabled = true; aviso("Preparando…");
+  const pp = /\.pptx$/i.test(vf.name);
+  if (/\.ppt$/i.test(vf.name)) return aviso("Este é o formato antigo do PowerPoint (.ppt). Abra o arquivo no PowerPoint e use Arquivo > Salvar como > .pptx.");
+  if (!pp && !/^video\//.test(vf.type) && !/\.(mp4|m4v|mov|webm|ogv)$/i.test(vf.name)) return aviso("Escolha um vídeo (MP4) ou uma apresentação do PowerPoint (.pptx).");
+  btn.disabled = true; enviando = true; aviso("Preparando…");
   const subidos = [];
   try {
     const id = slug(titulo) + "-" + Date.now().toString(36);
-    const ext = (vf.name.split(".").pop() || "mp4").toLowerCase().replace(/[^a-z0-9]/g, "") || "mp4";
-    const arquivo = `${id}.${ext}`;
-    const info = await lerVideo(vf);
-    const imagem = cf || info.capa;
-    const capa = imagem ? `${id}.jpg` : "";
-
-    aviso(`Enviando o vídeo (${(vf.size / 1048576).toFixed(0)} MB). Não feche a página…`);
-    let r = await sb.storage.from("videos").upload(arquivo, vf, { contentType: vf.type || "video/mp4", upsert: false });
+    const ext = pp ? "pptx" : (vf.name.split(".").pop() || "mp4").toLowerCase().replace(/[^a-z0-9]/g, "") || "mp4";
+    const arquivo = `${id}.${ext}`, info = pp ? await lerPptx(vf) : await lerVideo(vf);
+    const imagem = cf || info.capa, capa = imagem ? `${id}.jpg` : "";
+    aviso(`Enviando ${pp ? "a apresentação" : "o vídeo"} (${(vf.size / 1048576).toFixed(0)} MB). Não feche a página…`);
+    const corpo = vf.slice(0, vf.size, pp ? PPTX : vf.type || "video/mp4");
+    let r = await sb.storage.from("videos").upload(arquivo, corpo, { contentType: corpo.type, upsert: false });
     if (r.error) throw r.error;
     subidos.push(arquivo);
     if (imagem) {
-      r = await sb.storage.from("videos").upload(capa, imagem, { contentType: imagem.type || "image/jpeg", upsert: false });
+      const img = imagem.slice(0, imagem.size, imagem.type || "image/jpeg");
+      r = await sb.storage.from("videos").upload(capa, img, { contentType: img.type, upsert: false });
       if (r.error) throw r.error;
       subidos.push(capa);
     }
@@ -277,26 +611,26 @@ $("#fa").onsubmit = async e => {
     if (error) throw error;
     $("#fa").reset();
     await abrirApp(id);
-    aviso("Vídeo adicionado.", true);
+    aviso(pp ? "Apresentação adicionada." : "Vídeo adicionado.", true);
   } catch (err) {
     if (subidos.length) await sb.storage.from("videos").remove(subidos).catch(() => {});
     const m = String(err && err.message || "");
-    aviso(/size|exceed|too large|413/i.test(m)
-      ? "O arquivo passou do tamanho máximo do Supabase (50 MB no plano gratuito). Comprima o vídeo e tente de novo."
-      : "Não foi possível adicionar o vídeo. " + m);
+    aviso(/size|exceed|too large|413/i.test(m) ? "O arquivo passou do tamanho máximo do Supabase (50 MB no plano gratuito). Comprima o arquivo e tente de novo."
+      : /mime|not supported|unsupported/i.test(m) ? "O Supabase está bloqueando este tipo de arquivo no bucket “videos”. No SQL Editor do Supabase, rode: update storage.buckets set allowed_mime_types = null where id = 'videos';"
+      : "Não foi possível adicionar. " + m);
   }
-  btn.disabled = false;
+  btn.disabled = false; enviando = false;
 };
 
 async function excluir(x) {
-  if (!confirm(`Excluir "${x.titulo}"? O vídeo e a capa serão apagados e não dá para desfazer.`)) return;
+  if (!confirm(`Excluir "${x.titulo}"? O arquivo e a capa serão apagados e não dá para desfazer.`)) return;
   try {
     const { data, error } = await sb.from("catalogo").delete().eq("id", x.id).select("id");
     if (error) throw error;
     if (!data || !data.length) throw new Error("sem permissão");
     await sb.storage.from("videos").remove([x.arquivo, x.capa].filter(Boolean)).catch(() => {});
     await abrirApp(atual && atual.id !== x.id ? atual.id : "");
-  } catch { alert("Não foi possível excluir o vídeo."); }
+  } catch { alert("Não foi possível excluir. Verifique a internet e tente de novo."); }
 }
 
 // ---------- Login só com senha ----------
@@ -310,6 +644,11 @@ async function entrar(senha) {
   return { code: "invalid_credentials" };
 }
 
+$("#ver").onclick = () => {
+  const s = $("#s"), oculta = s.type === "password";
+  s.type = oculta ? "text" : "password"; $("#ver").textContent = oculta ? "Ocultar" : "Mostrar";
+};
+
 $("#f").onsubmit = async e => {
   e.preventDefault();
   const btn = $("#ent"), erro = $("#erro");
@@ -318,36 +657,53 @@ $("#f").onsubmit = async e => {
     const error = await entrar($("#s").value);
     if (error) {
       erro.textContent = error.code === "invalid_credentials"
-        ? "Senha incorreta."
-        : error.status === 429 ? "Muitas tentativas. Espere alguns minutos." : "Não foi possível entrar agora. Tente de novo.";
+        ? "Senha incorreta. Confira se digitou igual à que você recebeu."
+        : error.status === 429 ? "Muitas tentativas. Espere alguns minutos e tente de novo." : "Não foi possível entrar agora. Tente de novo.";
     } else {
-      localStorage.setItem("peat:entrada", String(Date.now()));
+      marcar();
       $("#s").value = "";
       const r = await iniciarSessao();
       if (r !== "ok") { await sb.auth.signOut(); erro.textContent = "Esta senha não tem acesso liberado."; }
     }
-  } catch { erro.textContent = "Não foi possível carregar os vídeos. Tente de novo."; }
+  } catch (err) { console.warn(err); erro.textContent = "Não foi possível carregar os vídeos. Verifique a internet e tente de novo."; }
   btn.disabled = false;
 };
 
-$("#sair").onclick = sair;
-addEventListener("hashchange", () => { if (!$("#app").hidden) abrir(location.hash.slice(1), false); });
-setInterval(() => { if (!$("#app").hidden && !adm && Date.now() - entrada() > DIA) sair(); }, 60000);
+$("#sair").onclick = () => sair();
+$("#ant").onclick = () => P.ir(P.i - 1);
+$("#prox").onclick = () => P.ir(P.i + 1);
+$("#tela").hidden = !document.fullscreenEnabled;
+$("#tela").onclick = () => document.fullscreenElement ? document.exitFullscreen() : visor.requestFullscreen();
+addEventListener("keydown", e => {
+  if (!P.ativo() || /^(VIDEO|AUDIO|INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+  const k = e.key;
+  if (k === "ArrowRight" || k === "PageDown") P.ir(P.i + 1);
+  else if (k === "ArrowLeft" || k === "PageUp") P.ir(P.i - 1);
+  else if (k === "Home") P.ir(0);
+  else if (k === "End") P.ir(1e9);
+  else return;
+  e.preventDefault();
+});
+if (window.ResizeObserver) new ResizeObserver(() => P.ajustar()).observe(stage);
+addEventListener("resize", () => P.ajustar());
+addEventListener("hashchange", () => { if (!$("#app").hidden) abrir(hash(), false); });
+setInterval(() => { if (!$("#app").hidden && !adm && Date.now() - entrada() > DIA) sair("Por segurança, o acesso vale por 24 horas. Digite a senha de novo."); }, 60000);
 
 (async () => {
-  if (!configurado) {
+  if (!configurado || !sb) {
     $("#login").hidden = false; $("#ent").disabled = true;
     $("#erro").textContent = "Falta preencher o arquivo config.js com os dados do Supabase.";
     return;
   }
   sb.auth.onAuthStateChange(ev => { if (ev === "SIGNED_OUT") mostrarLogin(); });
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    try {
-      if (await iniciarSessao() === "ok") return;
-      await sair();   // prazo vencido ou conta sem acesso
-    } catch { /* sem conexão: mantém a sessão e mostra o login */ }
-  }
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      const r = await iniciarSessao();
+      if (r === "ok") return;
+      await sair(r === "expirou" ? "Por segurança, o acesso vale por 24 horas. Digite a senha de novo." : "Esta conta não tem acesso liberado.");
+    }
+  } catch (e) { console.warn(e); $("#erro").textContent = "Sem conexão com o servidor. Verifique a internet e atualize a página."; }
   $("#login").hidden = false;
 })();
 </script>
