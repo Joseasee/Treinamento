@@ -114,6 +114,12 @@ li small{color:var(--mute)}
 #fa :is(input,select,textarea){width:100%}
 #fa small{font-weight:400;color:var(--mute)}
 #fa input[type=file]{padding:8px}
+.fila{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.fila li{display:grid;gap:4px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);min-width:0}
+.fila .nome{font-weight:400;font-size:.875rem;color:var(--mute);overflow-wrap:anywhere}
+.fila .st{min-height:1.4em;font-size:.875rem;color:var(--mute)}
+.fila .st.erro{color:var(--err)}
+.fila .st.ok{color:var(--green)}
 #detectado{font-weight:600;color:var(--green);min-height:1.5em;margin:0}
 
 @media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}aside{position:static}}
@@ -151,7 +157,7 @@ li small{color:var(--mute)}
   <details id="adm" hidden>
     <summary>Administração: adicionar vídeo ou apresentação</summary>
     <form id="fa">
-      <p class="mute">Passo a passo: 1) escolha a seção (IT, APR ou Treinamento), 2) escolha o arquivo, 3) confira o título e clique em Enviar. O sistema reconhece sozinho se é vídeo ou PowerPoint (.pptx).</p>
+      <p class="mute">Passo a passo: 1) escolha a seção (IT, APR ou Treinamento), 2) escolha um ou vários arquivos de uma vez (segure Ctrl ou Shift para marcar mais de um), 3) confira os títulos e clique em Enviar. O sistema reconhece sozinho se cada arquivo é vídeo ou PowerPoint (.pptx).</p>
       <label for="ak">Seção
         <select id="ak" required>
           <option value="">Escolha…</option>
@@ -160,13 +166,13 @@ li small{color:var(--mute)}
           <option value="treinamento">Treinamento</option>
         </select>
       </label>
-      <label for="aa">Arquivo (vídeo ou PowerPoint .pptx)
-        <input id="aa" type="file" required accept="video/*,.pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation">
+      <label for="aa">Arquivos (vídeos ou PowerPoint .pptx)<small>Dá para escolher vários de uma vez.</small>
+        <input id="aa" type="file" multiple required accept="video/*,.pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation">
       </label>
       <p id="detectado" aria-live="polite"></p>
-      <label for="at">Título<input id="at" type="text" required maxlength="120"></label>
-      <label for="ad">Descrição (opcional)<textarea id="ad" rows="2" maxlength="500"></textarea></label>
-      <label for="ac">Capa (opcional)<small>Em vídeos, se não escolher, a capa é tirada do próprio vídeo. Em apresentações, aparece um quadrado verde com "PPTX".</small><input id="ac" type="file" accept="image/*"></label>
+      <ul id="fila" class="fila"></ul>
+      <label for="ad">Descrição (opcional)<small>Vale para todos os arquivos desta remessa.</small><textarea id="ad" rows="2" maxlength="500"></textarea></label>
+      <label for="ac" id="lc">Capa (opcional)<small>Só vale quando você envia um arquivo por vez. Em vídeos, se não escolher, a capa é tirada do próprio vídeo. Em apresentações, aparece um quadrado verde com "PPTX".</small><input id="ac" type="file" accept="image/*"></label>
       <button class="btn" id="envia" type="submit">Enviar</button>
       <p class="msg" id="aviso" role="status"></p>
     </form>
@@ -558,16 +564,31 @@ function classificar(f) {
   return null;
 }
 
+// Fila de envio: uma linha por arquivo escolhido (dá para escolher vários de uma vez), cada uma com o seu título.
+let fila = [];
 $("#aa").onchange = () => {
-  const f = $("#aa").files[0], d = $("#detectado");
-  if (!f) { d.textContent = ""; return; }
-  const k = classificar(f);
-  d.style.color = k === "video" || k === "apresentacao" ? "" : "var(--err)";
-  d.textContent = k === "video" ? "Reconhecido: vídeo."
-    : k === "apresentacao" ? "Reconhecido: apresentação PowerPoint."
-    : k === "antigo" ? "Esse é o formato antigo do PowerPoint. Abra no PowerPoint e use Arquivo → Salvar como → .pptx."
-    : "Arquivo não aceito. Envie um vídeo (mp4, webm…) ou um PowerPoint .pptx.";
-  if (k && k !== "antigo" && !$("#at").value) $("#at").value = f.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim().slice(0, 120);
+  const fs = [...$("#aa").files], box = $("#fila"), d = $("#detectado");
+  box.textContent = ""; fila = [];
+  fs.forEach(f => {
+    const tipo = classificar(f), li = document.createElement("li"), nome = document.createElement("span");
+    const t = document.createElement("input"), st = document.createElement("span");
+    nome.className = "nome"; nome.textContent = `${f.name} (${(f.size / 1048576).toFixed(1)} MB)`;
+    t.type = "text"; t.maxLength = 120; t.setAttribute("aria-label", "Título de " + f.name);
+    t.value = f.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim().slice(0, 120);
+    const erro = tipo === "antigo" ? "Formato antigo do PowerPoint: abra no PowerPoint e use Arquivo → Salvar como → .pptx."
+      : tipo !== "video" && tipo !== "apresentacao" ? "Arquivo não aceito. Envie um vídeo (mp4, webm…) ou um PowerPoint .pptx."
+      : f.size > MAX_MB * 1048576 ? `Passa do limite de ${MAX_MB} MB. Comprima e escolha de novo.` : "";
+    st.className = erro ? "st erro" : "st";
+    st.textContent = erro || (tipo === "video" ? "Vídeo, pronto para enviar." : "Apresentação PowerPoint, pronta para enviar.");
+    if (erro) t.disabled = true;
+    li.append(nome, t, st); box.append(li);
+    fila.push({ arq: f, tipo, t, st, ok: !erro });
+  });
+  const n = fila.filter(x => x.ok).length;
+  d.style.color = n < fs.length ? "var(--err)" : "";
+  d.textContent = !fs.length ? "" : n === fs.length ? (n === 1 ? "1 arquivo pronto para enviar." : `${n} arquivos prontos para enviar.`)
+    : `${n} de ${fs.length} prontos para enviar. Os que não foram aceitos serão ignorados.`;
+  $("#lc").hidden = n > 1;
 };
 
 // Vídeo: lê a duração e tira uma imagem para a capa, tudo no navegador.
@@ -605,28 +626,21 @@ async function lerPpt(arquivo) {
   return { duracao: n === 1 ? "1 slide" : `${n} slides`, capa: null };
 }
 
-$("#fa").onsubmit = async e => {
-  e.preventDefault();
-  const btn = $("#envia"), titulo = $("#at").value.trim(), descricao = $("#ad").value.trim();
-  const arq = $("#aa").files[0], cf = $("#ac").files[0], categoria = $("#ak").value;
-  if (!titulo || !arq || btn.disabled) return;
-  if (!SECOES[categoria]) { aviso("Escolha a seção: IT, APR ou Treinamento."); return; }
-  const tipo = classificar(arq);
-  if (tipo !== "video" && tipo !== "apresentacao") { aviso(tipo === "antigo" ? "Salve o arquivo como .pptx e tente de novo." : "Arquivo não aceito. Envie um vídeo ou um .pptx."); return; }
-  if (arq.size > MAX_MB * 1048576) { aviso(`O arquivo tem ${(arq.size / 1048576).toFixed(0)} MB e o limite é ${MAX_MB} MB. Comprima e tente de novo.`); return; }
-  btn.disabled = true; aviso("Preparando…");
+// Envia um arquivo (storage + linha no catálogo). Se algo falhar, desfaz o que já subiu e repassa o erro.
+async function enviarUm({ arq, tipo }, titulo, descricao, cf, categoria, ordem, say) {
   const subidos = [];
   try {
     const id = slug(titulo) + "-" + Date.now().toString(36);
     const ext = tipo === "apresentacao" ? "pptx" : ((arq.name.split(".").pop() || "mp4").toLowerCase().replace(/[^a-z0-9]/g, "") || "mp4");
     const arquivo = `${id}.${ext}`;
+    say("Conferindo o arquivo…");
     let info;
     try { info = tipo === "apresentacao" ? await lerPpt(arq) : await lerVideo(arq); }
     catch (er) { if (tipo === "apresentacao") throw new Error("Não consegui abrir esse PowerPoint. Confira se o arquivo não está corrompido."); info = { duracao: "", capa: null }; }
     const imagem = cf || info.capa;
     const capa = imagem ? `${id}.jpg` : "";
 
-    aviso(`Enviando (${(arq.size / 1048576).toFixed(0)} MB). Não feche a página…`);
+    say(`Enviando (${(arq.size / 1048576).toFixed(0)} MB)…`);
     const ct = tipo === "apresentacao" ? PPTX_MIME : (arq.type || "video/mp4");
     let r = await sb.storage.from("videos").upload(arquivo, arq, { contentType: ct, upsert: false });
     if (r.error) throw r.error;
@@ -636,7 +650,6 @@ $("#fa").onsubmit = async e => {
       if (r.error) throw r.error;
       subidos.push(capa);
     }
-    const ordem = catalogo.reduce((m, x) => Math.max(m, x.ordem || 0), 0) + 1;
     const linha = { id, titulo, descricao, duracao: info.duracao, arquivo, capa, ordem, tipo, categoria };
     let ins = await sb.from("catalogo").insert(linha);
     if (ins.error && /categoria/i.test(ins.error.message || "")) throw new Error("Falta rodar o arquivo supabase-it-apr.sql no Supabase (veja o LEIA-ME).");
@@ -645,21 +658,50 @@ $("#fa").onsubmit = async e => {
       delete linha.tipo; ins = await sb.from("catalogo").insert(linha);
     }
     if (ins.error) throw ins.error;
-    $("#fa").reset(); $("#detectado").textContent = "";
-    secao = categoria; filtro = "todos";
-    document.querySelectorAll(".aba").forEach(o => o.setAttribute("aria-pressed", String(o.dataset.f === "todos")));
-    await abrirApp(id);
-    aviso(tipo === "apresentacao" ? "Apresentação adicionada." : "Vídeo adicionado.", true);
+    return id;
   } catch (err) {
     if (subidos.length) await sb.storage.from("videos").remove(subidos).catch(() => {});
-    const m = String(err && err.message || "");
-    aviso(/categoria_check|check constraint/i.test(m) ? "Falta rodar o arquivo supabase-treinamento.sql no Supabase (veja o LEIA-ME)."
-      : /size|exceed|too large|413/i.test(m)
-      ? `O arquivo passou do tamanho máximo do Supabase (50 MB no plano gratuito). Comprima e tente de novo.`
-      : /mime|not supported|invalid/i.test(m) ? "O Supabase não aceitou esse tipo de arquivo. Veja o LEIA-ME (passo do bucket)."
-      : "Não foi possível adicionar. " + m);
+    throw err;
   }
-  btn.disabled = false;
+}
+
+function msgErro(err) {
+  const m = String(err && err.message || "");
+  return /categoria_check|check constraint/i.test(m) ? "Falta rodar o arquivo supabase-treinamento.sql no Supabase (veja o LEIA-ME)."
+    : /size|exceed|too large|413/i.test(m) ? "O arquivo passou do tamanho máximo do Supabase (50 MB no plano gratuito). Comprima e tente de novo."
+    : /mime|not supported|invalid/i.test(m) ? "O Supabase não aceitou esse tipo de arquivo. Veja o LEIA-ME (passo do bucket)."
+    : "Não foi possível adicionar. " + m;
+}
+
+// Envia os arquivos escolhidos um depois do outro. Os que falharem ficam na lista para tentar de novo.
+$("#fa").onsubmit = async e => {
+  e.preventDefault();
+  const btn = $("#envia"), descricao = $("#ad").value.trim(), categoria = $("#ak").value;
+  if (btn.disabled) return;
+  if (!SECOES[categoria]) { aviso("Escolha a seção: IT, APR ou Treinamento."); return; }
+  const itens = fila.filter(x => x.ok);
+  if (!itens.length) { aviso("Nenhum dos arquivos escolhidos pode ser enviado. Veja o aviso abaixo de cada um."); return; }
+  if (itens.some(x => !x.t.value.trim())) { aviso("Preencha o título de todos os arquivos."); return; }
+  const cf = itens.length === 1 ? $("#ac").files[0] : null;
+  btn.disabled = true; $("#aa").disabled = true; itens.forEach(x => { x.t.disabled = true; });
+  let ordem = catalogo.reduce((m, x) => Math.max(m, x.ordem || 0), 0) + 1, feitos = 0, ultimo = null;
+  for (const [i, x] of itens.entries()) {
+    aviso(`Enviando ${i + 1} de ${itens.length}. Não feche a página…`);
+    try {
+      ultimo = await enviarUm(x, x.t.value.trim(), descricao, cf, categoria, ordem++, txt => { x.st.className = "st"; x.st.textContent = txt; });
+      x.ok = false; feitos++; x.st.className = "st ok"; x.st.textContent = "Enviado.";
+    } catch (err) { x.st.className = "st erro"; x.st.textContent = msgErro(err); x.t.disabled = false; }
+  }
+  $("#aa").disabled = false; btn.disabled = false;
+  const falhas = itens.length - feitos;
+  if (feitos) {
+    secao = categoria; filtro = "todos";
+    document.querySelectorAll(".aba").forEach(o => o.setAttribute("aria-pressed", String(o.dataset.f === "todos")));
+    await abrirApp(ultimo);
+  }
+  if (!falhas) { $("#fa").reset(); $("#fila").textContent = ""; fila = []; $("#detectado").textContent = ""; $("#lc").hidden = false; }
+  aviso(!falhas ? (itens.length === 1 ? (itens[0].tipo === "apresentacao" ? "Apresentação adicionada." : "Vídeo adicionado.") : `${feitos} arquivos adicionados.`)
+    : `${feitos} enviado(s) e ${falhas} com erro. Veja o aviso em vermelho e clique em Enviar de novo para tentar só os que falharam.`, !falhas);
 };
 
 async function mover(x, nova) {
