@@ -41,7 +41,7 @@ textarea{resize:vertical}
 header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:22px 0 14px}
 header p{margin:2px 0 0;color:var(--mute)}
 
-/* ---------- Seções (IT / APR / AST / Treinamento) ---------- */
+/* ---------- Seções (IT / APR) ---------- */
 .secoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin:0 0 6px}
 .secao{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer;color:var(--ink);text-align:left;display:grid;gap:0;line-height:1.25}
 .secao b{font-size:1.05rem;font-weight:800}
@@ -167,26 +167,25 @@ li small{color:var(--mute)}
   <header>
     <div>
       <h1>Vídeos Peat</h1>
-      <p>Escolha uma seção (IT, APR, AST ou Treinamento) e clique em um item da lista. Vídeos e apresentações abrem aqui mesmo, nesta página.</p>
+      <p>Escolha uma seção (IT, APR ou Treinamento) e clique em um item da lista. Vídeos, apresentações e PDFs abrem aqui mesmo, nesta página.</p>
     </div>
     <button id="sair" class="btn sec" type="button">Sair</button>
   </header>
 
   <details id="adm" hidden>
-    <summary>Administração: adicionar vídeo ou apresentação</summary>
+    <summary>Administração: adicionar vídeo, apresentação ou PDF</summary>
     <form id="fa">
-      <p class="mute">Passo a passo: 1) escolha a seção (IT, APR, AST ou Treinamento), 2) escolha um ou vários arquivos de uma vez (segure Ctrl ou Shift para marcar mais de um), 3) confira os títulos e clique em Enviar. O sistema reconhece sozinho se cada arquivo é vídeo ou PowerPoint (.pptx).</p>
+      <p class="mute">Passo a passo: 1) escolha a seção (IT, APR ou Treinamento), 2) escolha um ou vários arquivos de uma vez (segure Ctrl ou Shift para marcar mais de um), 3) confira os títulos e clique em Enviar. O sistema reconhece sozinho se cada arquivo é vídeo, PowerPoint (.pptx) ou PDF.</p>
       <label for="ak">Seção
         <select id="ak" required>
           <option value="">Escolha…</option>
           <option value="it">IT – Instrução de Trabalho</option>
           <option value="apr">APR – Análise Preliminar de Risco</option>
-          <option value="ast">AST – Análise de Segurança da Tarefa</option>
           <option value="treinamento">Treinamento</option>
         </select>
       </label>
-      <label for="aa">Arquivos (vídeos ou PowerPoint .pptx)<small>Dá para escolher vários de uma vez.</small>
-        <input id="aa" type="file" multiple required accept="video/*,.pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation">
+      <label for="aa">Arquivos (vídeos, PowerPoint .pptx ou PDF)<small>Dá para escolher vários de uma vez.</small>
+        <input id="aa" type="file" multiple required accept="video/*,.pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation,.pdf,application/pdf">
       </label>
       <p id="detectado" aria-live="polite"></p>
       <ul id="fila" class="fila"></ul>
@@ -200,7 +199,6 @@ li small{color:var(--mute)}
   <div class="secoes" role="group" aria-label="Seção">
     <button class="secao" type="button" data-s="it" aria-pressed="true"><b>IT</b><span id="n-it">Instruções de Trabalho</span></button>
     <button class="secao" type="button" data-s="apr" aria-pressed="false"><b>APR</b><span id="n-apr">Análise Preliminar de Risco</span></button>
-    <button class="secao" type="button" data-s="ast" aria-pressed="false"><b>AST</b><span id="n-ast">Análise de Segurança da Tarefa</span></button>
     <button class="secao" type="button" data-s="treinamento" aria-pressed="false"><b>Treinamento</b><span id="n-treinamento">Vídeos e apresentações</span></button>
     <button class="secao" type="button" data-s="provas" aria-pressed="false"><b>Provas</b><span id="n-provas">Teste seus conhecimentos</span></button>
   </div>
@@ -236,6 +234,7 @@ li small{color:var(--mute)}
       <button class="aba" type="button" data-f="todos" aria-pressed="true">Qualquer formato</button>
       <button class="aba" type="button" data-f="video" aria-pressed="false">Vídeos</button>
       <button class="aba" type="button" data-f="apresentacao" aria-pressed="false">Apresentações</button>
+      <button class="aba" type="button" data-f="pdf" aria-pressed="false">PDFs</button>
     </div>
     <input id="busca" type="search" placeholder="Buscar pelo título…" aria-label="Buscar pelo título" maxlength="60">
   </div>
@@ -275,11 +274,10 @@ const $ = s => document.querySelector(s), v = $("#v"), list = $("#list");
 const DIA = 24 * 60 * 60 * 1000;           // senha comum: aparelho lembrado por 24 h (ADM: sem prazo)
 const LARGURA_SLIDE = 960;                  // tamanho interno de desenho dos slides (depois é escalado)
 const PPTX_MIME = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-const ROTULO = { video: "Vídeo", apresentacao: "Apresentação" };
+const ROTULO = { video: "Vídeo", apresentacao: "Apresentação", pdf: "PDF" };
 const SECOES = {
   it:  { titulo: "ITs – Instruções de Trabalho", nome: "IT", desc: "IT = Instrução de Trabalho: o passo a passo de como executar uma tarefa corretamente." },
   apr: { titulo: "APRs – Análises Preliminares de Risco", nome: "APR", desc: "APR = Análise Preliminar de Risco: os riscos de uma atividade e como evitá-los antes de começar." },
-  ast: { titulo: "ASTs – Análises de Segurança da Tarefa", nome: "AST", desc: "AST = Análise de Segurança da Tarefa: feita com a equipe antes de iniciar a atividade, na rendição e depois de executar, considerando as particularidades da tarefa." },
   treinamento: { titulo: "Treinamentos", nome: "Treinamento", desc: "Treinamento: vídeos e apresentações para aprender e se atualizar." },
 };
 const cfg = window.PEAT_CONFIG || {};
@@ -298,8 +296,14 @@ const lerLS = k => { try { return localStorage.getItem(k); } catch { return null
 const gravarLS = (k, x) => { try { localStorage.setItem(k, x); } catch {} };
 const apagarLS = k => { try { localStorage.removeItem(k); } catch {} };
 const entrada = () => Number(lerLS("peat:entrada") || 0);
-const catDe = x => x && (x.categoria === "apr" || x.categoria === "ast" || x.categoria === "treinamento") ? x.categoria : "it";
-const tipoDe = x => x && x.tipo === "apresentacao" ? "apresentacao" : "video";
+const catDe = x => x && (x.categoria === "apr" || x.categoria === "treinamento") ? x.categoria : "it";
+// O formato vem da extensão do arquivo (itens antigos estão marcados como "video" no banco, mesmo sendo PDF ou PowerPoint).
+const tipoDe = x => {
+  const ext = String(x && x.arquivo || "").split("?")[0].split(".").pop().toLowerCase();
+  if (ext === "pptx") return "apresentacao";
+  if (ext === "pdf") return "pdf";
+  return x && (x.tipo === "apresentacao" || x.tipo === "pdf") ? x.tipo : "video";
+};
 const reduzir = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 async function assinar(caminho, segundos = 4 * 3600) {
@@ -380,9 +384,10 @@ async function abrir(id, tocar) {
   marcarAtual();
   history.replaceState(null, "", "#" + x.id);
   limparVideo(); limparPpt(); limparAviso($("#stageV"));
-  const pal = tipoDe(x) === "apresentacao" ? $("#stageP") : $("#stageV");
+  const pal = tipoDe(x) !== "video" ? $("#stageP") : $("#stageV");
   if (tocar) pal.scrollIntoView({ behavior: reduzir() ? "auto" : "smooth", block: "center" });
   if (tipoDe(x) === "apresentacao") { palco("apresentacao"); abrirPpt(x); }
+  else if (tipoDe(x) === "pdf") { palco("apresentacao"); abrirPdf(x); }
   else { palco("video"); abrirVideo(x, tocar); }
 }
 
@@ -418,7 +423,7 @@ async function desenhar(buf, altura) {
 
 async function abrirPpt(x) {
   const meu = cancelaPpt, palcoP = $("#stageP");
-  avisoPalco(palcoP, "Carregando apresentação…");
+  avisoPalco(palcoP, "Carregando apresentação…"); $("#dica").textContent = DICA_PPT;
   try {
     const buf = await baixar(await assinar(x.arquivo));
     if (meu !== cancelaPpt) return;
@@ -449,7 +454,7 @@ function irSlide(i) {
   if (!ppt) return;
   ppt.idx = Math.max(0, Math.min(ppt.total - 1, i));
   ppt.pv.renderSingleSlide(ppt.idx);          // o slide anterior (e o vídeo dele) é removido
-  $("#pos").textContent = `Slide ${ppt.idx + 1} de ${ppt.total}`;
+  $("#pos").textContent = `${ppt.rot || "Slide"} ${ppt.idx + 1} de ${ppt.total}`;
   $("#ant").disabled = ppt.idx === 0;
   $("#prox").disabled = ppt.idx === ppt.total - 1;
 }
@@ -492,7 +497,6 @@ function atualizarSecoes() {
   const n = c => catalogo.filter(x => catDe(x) === c).length;
   $("#n-it").textContent = `Instruções de Trabalho · ${n("it")}`;
   $("#n-apr").textContent = `Análise Preliminar de Risco · ${n("apr")}`;
-  $("#n-ast").textContent = `Análise de Segurança da Tarefa · ${n("ast")}`;
   $("#n-treinamento").textContent = `Vídeos e apresentações · ${n("treinamento")}`;
   document.querySelectorAll(".secao").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === secao)));
   if (secao !== "provas" && !$("#provas").hidden) mostrarProvas(false);
@@ -519,7 +523,7 @@ function desenharLista() {
     b.type = "button"; b.className = "item"; b.dataset.id = x.id;
     b.innerHTML = '<span class="thumb"></span><span><strong></strong><small><span class="tag cat"></span><span class="tag"></span><span class="info"></span></small></span>';
     const th = b.querySelector(".thumb");
-    th.append(tipoDe(x) === "apresentacao" ? "PPTX" : "▶");
+    th.append({ apresentacao: "PPTX", pdf: "PDF" }[tipoDe(x)] || "▶");
     if (x.capaUrl) { const im = document.createElement("img"); im.alt = ""; im.loading = "lazy"; im.src = x.capaUrl; th.append(im); }
     b.querySelector("strong").textContent = x.titulo;
     b.querySelector(".tag.cat").textContent = SECOES[catDe(x)].nome;
@@ -545,7 +549,7 @@ function desenharLista() {
   const vz = $("#vazio");
   vz.hidden = itens.length > 0;
   if (!itens.length) vz.textContent = catalogo.length ? "Nada encontrado nesta seção com esse filtro ou busca." : "Ainda não há nada por aqui.";
-  $("#lt").textContent = SECOES[secao].titulo + (filtro === "video" ? " · só vídeos" : filtro === "apresentacao" ? " · só apresentações" : "");
+  $("#lt").textContent = SECOES[secao].titulo + (filtro === "video" ? " · só vídeos" : filtro === "apresentacao" ? " · só apresentações" : filtro === "pdf" ? " · só PDFs" : "");
   atualizarSecoes();
   marcarAtual();
 }
@@ -610,6 +614,7 @@ function slug(t) {
 function classificar(f) {
   const nome = (f.name || "").toLowerCase();
   if (nome.endsWith(".pptx")) return "apresentacao";
+  if (nome.endsWith(".pdf") || f.type === "application/pdf") return "pdf";
   if (nome.endsWith(".ppt") || nome.endsWith(".pps") || nome.endsWith(".ppsx")) return "antigo";
   if ((f.type || "").startsWith("video/") || /\.(mp4|webm|mov|m4v|ogv)$/.test(nome)) return "video";
   return null;
@@ -627,10 +632,10 @@ $("#aa").onchange = () => {
     t.type = "text"; t.maxLength = 120; t.setAttribute("aria-label", "Título de " + f.name);
     t.value = f.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim().slice(0, 120);
     const erro = tipo === "antigo" ? "Formato antigo do PowerPoint: abra no PowerPoint e use Arquivo → Salvar como → .pptx."
-      : tipo !== "video" && tipo !== "apresentacao" ? "Arquivo não aceito. Envie um vídeo (mp4, webm…) ou um PowerPoint .pptx."
+      : !["video", "apresentacao", "pdf"].includes(tipo) ? "Arquivo não aceito. Envie um vídeo (mp4, webm…), um PowerPoint .pptx ou um PDF."
       : f.size > MAX_MB * 1048576 ? `Passa do limite de ${MAX_MB} MB. Comprima e escolha de novo.` : "";
     st.className = erro ? "st erro" : "st";
-    st.textContent = erro || (tipo === "video" ? "Vídeo, pronto para enviar." : "Apresentação PowerPoint, pronta para enviar.");
+    st.textContent = erro || ({ video: "Vídeo", apresentacao: "Apresentação PowerPoint", pdf: "PDF" }[tipo] + " (pronto para enviar).");
     if (erro) t.disabled = true;
     li.append(nome, t, st); box.append(li);
     fila.push({ arq: f, tipo, t, st, ok: !erro });
@@ -682,17 +687,17 @@ async function enviarUm({ arq, tipo }, titulo, descricao, cf, categoria, ordem, 
   const subidos = [];
   try {
     const id = slug(titulo) + "-" + Date.now().toString(36);
-    const ext = tipo === "apresentacao" ? "pptx" : ((arq.name.split(".").pop() || "mp4").toLowerCase().replace(/[^a-z0-9]/g, "") || "mp4");
+    const ext = tipo === "apresentacao" ? "pptx" : tipo === "pdf" ? "pdf" : ((arq.name.split(".").pop() || "mp4").toLowerCase().replace(/[^a-z0-9]/g, "") || "mp4");
     const arquivo = `${id}.${ext}`;
     say("Conferindo o arquivo…");
     let info;
-    try { info = tipo === "apresentacao" ? await lerPpt(arq) : await lerVideo(arq); }
-    catch (er) { if (tipo === "apresentacao") throw new Error("Não consegui abrir esse PowerPoint. Confira se o arquivo não está corrompido."); info = { duracao: "", capa: null }; }
+    try { info = tipo === "apresentacao" ? await lerPpt(arq) : tipo === "pdf" ? await lerPdf(arq) : await lerVideo(arq); }
+    catch (er) { if (tipo === "pdf") throw new Error("Não consegui abrir esse PDF. Confira se ele não está corrompido nem protegido por senha."); if (tipo === "apresentacao") throw new Error("Não consegui abrir esse PowerPoint. Confira se o arquivo não está corrompido."); info = { duracao: "", capa: null }; }
     const imagem = cf || info.capa;
     const capa = imagem ? `${id}.jpg` : "";
 
     say(`Enviando (${(arq.size / 1048576).toFixed(0)} MB)…`);
-    const ct = tipo === "apresentacao" ? PPTX_MIME : (arq.type || "video/mp4");
+    const ct = tipo === "apresentacao" ? PPTX_MIME : tipo === "pdf" ? "application/pdf" : (arq.type || "video/mp4");
     let r = await sb.storage.from("videos").upload(arquivo, arq, { contentType: ct, upsert: false });
     if (r.error) throw r.error;
     subidos.push(arquivo);
@@ -705,7 +710,7 @@ async function enviarUm({ arq, tipo }, titulo, descricao, cf, categoria, ordem, 
     let ins = await sb.from("catalogo").insert(linha);
     if (ins.error && /categoria/i.test(ins.error.message || "")) throw new Error("Falta rodar o arquivo supabase-it-apr.sql no Supabase (veja o LEIA-ME).");
     if (ins.error && /tipo/i.test(ins.error.message || "")) {
-      if (tipo === "apresentacao") throw new Error("Falta rodar o arquivo supabase-apresentacoes.sql no Supabase (veja o LEIA-ME).");
+      if (tipo !== "video") throw new Error("Falta rodar o arquivo supabase-arquivos.sql no Supabase (veja o LEIA-ME).");
       delete linha.tipo; ins = await sb.from("catalogo").insert(linha);
     }
     if (ins.error) throw ins.error;
@@ -718,9 +723,9 @@ async function enviarUm({ arq, tipo }, titulo, descricao, cf, categoria, ordem, 
 
 function msgErro(err) {
   const m = String(err && err.message || "");
-  return /categoria_check|check constraint/i.test(m) ? "Falta rodar no Supabase o SQL da seção escolhida: supabase-treinamento.sql ou supabase-ast.sql (veja o LEIA-ME)."
+  return /categoria_check|check constraint/i.test(m) ? "Falta rodar o arquivo supabase-treinamento.sql no Supabase (veja o LEIA-ME)."
     : /size|exceed|too large|413/i.test(m) ? "O arquivo passou do tamanho máximo do Supabase (50 MB no plano gratuito). Comprima e tente de novo."
-    : /mime|not supported|invalid/i.test(m) ? "O Supabase não aceitou esse tipo de arquivo. Veja o LEIA-ME (passo do bucket)."
+    : /mime|not supported|invalid/i.test(m) ? "O Supabase não aceitou esse tipo de arquivo. Rode o arquivo supabase-arquivos.sql no Supabase (veja o LEIA-ME)."
     : "Não foi possível adicionar. " + m;
 }
 
@@ -729,7 +734,7 @@ $("#fa").onsubmit = async e => {
   e.preventDefault();
   const btn = $("#envia"), descricao = $("#ad").value.trim(), categoria = $("#ak").value;
   if (btn.disabled) return;
-  if (!SECOES[categoria]) { aviso("Escolha a seção: IT, APR, AST ou Treinamento."); return; }
+  if (!SECOES[categoria]) { aviso("Escolha a seção: IT, APR ou Treinamento."); return; }
   const itens = fila.filter(x => x.ok);
   if (!itens.length) { aviso("Nenhum dos arquivos escolhidos pode ser enviado. Veja o aviso abaixo de cada um."); return; }
   if (itens.some(x => !x.t.value.trim())) { aviso("Preencha o título de todos os arquivos."); return; }
@@ -751,9 +756,68 @@ $("#fa").onsubmit = async e => {
     await abrirApp(ultimo);
   }
   if (!falhas) { $("#fa").reset(); $("#fila").textContent = ""; fila = []; $("#detectado").textContent = ""; $("#lc").hidden = false; }
-  aviso(!falhas ? (itens.length === 1 ? (itens[0].tipo === "apresentacao" ? "Apresentação adicionada." : "Vídeo adicionado.") : `${feitos} arquivos adicionados.`)
+  aviso(!falhas ? (itens.length === 1 ? ({ apresentacao: "Apresentação adicionada.", pdf: "PDF adicionado." }[itens[0].tipo] || "Vídeo adicionado.") : `${feitos} arquivos adicionados.`)
     : `${feitos} enviado(s) e ${falhas} com erro. Veja o aviso em vermelho e clique em Enviar de novo para tentar só os que falharam.`, !falhas);
 };
+
+// ===== PDF =====
+const DICA_PPT = $("#dica").textContent;
+let pdfjsPronto = null;
+function carregarPdfJs() {
+  if (window.pdfjsLib) return Promise.resolve();
+  const tenta = base => new Promise((ok, no) => {
+    const sc = document.createElement("script"); sc.src = base + "pdf.min.js";
+    sc.onload = () => { pdfjsLib.GlobalWorkerOptions.workerSrc = base + "pdf.worker.min.js"; ok(); };
+    sc.onerror = () => { sc.remove(); no(); };
+    document.head.append(sc);
+  });
+  return pdfjsPronto || (pdfjsPronto = tenta("").catch(() => tenta("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/"))
+    .catch(() => { pdfjsPronto = null; throw new Error("Não consegui carregar o leitor de PDF. Confira se pdf.min.js e pdf.worker.min.js estão na pasta do site."); }));
+}
+// Dá ao PDF a mesma "cara" do PowerPoint (renderSingleSlide, dom, destroy), para reaproveitar botões, setas e tela cheia.
+function adaptadorPdf(pdf) {
+  const dom = document.createElement("div"), cv = document.createElement("canvas"); let tk = 0;
+  dom.style.cssText = "width:100%;height:100%;background:#fff"; cv.style.cssText = "display:block;width:100%;height:100%;object-fit:contain"; dom.append(cv);
+  return { dom, destroy() { tk++; try { pdf.destroy(); } catch {} },
+    async renderSingleSlide(i) {
+      const meu = ++tk, pg = await pdf.getPage(i + 1), vp = pg.getViewport({ scale: 2 * LARGURA_SLIDE / pg.getViewport({ scale: 1 }).width });
+      const c = document.createElement("canvas"); c.width = vp.width; c.height = vp.height;
+      await pg.render({ canvasContext: c.getContext("2d"), viewport: vp }).promise;
+      if (meu !== tk) return;
+      cv.width = c.width; cv.height = c.height; cv.getContext("2d").drawImage(c, 0, 0);
+    } };
+}
+async function abrirPdf(x) {
+  const meu = cancelaPpt, palcoP = $("#stageP");
+  $("#dica").textContent = "Dica: use as setas ← → do teclado para trocar de página.";
+  avisoPalco(palcoP, "Carregando PDF…");
+  try {
+    await carregarPdfJs();
+    const pdf = await pdfjsLib.getDocument({ data: await baixar(await assinar(x.arquivo)) }).promise;
+    if (meu !== cancelaPpt) { try { pdf.destroy(); } catch {} return; }
+    const vp = (await pdf.getPage(1)).getViewport({ scale: 1 });
+    ppt = { pv: adaptadorPdf(pdf), idx: 0, total: pdf.numPages, alt: Math.round(LARGURA_SLIDE * vp.height / vp.width), rot: "Página" };
+    $("#slide").replaceChildren(ppt.pv.dom);
+    limparAviso(palcoP); irSlide(0); ajustar();
+  } catch (e) {
+    if (meu === cancelaPpt) avisoPalco(palcoP, e && /leitor de PDF/.test(e.message) ? e.message : "Não foi possível abrir este PDF. O arquivo pode estar corrompido ou a internet falhou.", () => abrir(x.id, false));
+  }
+}
+// Ao enviar: conta as páginas e usa a primeira como capa.
+async function lerPdf(arquivo) {
+  await carregarPdfJs();
+  const pdf = await pdfjsLib.getDocument({ data: await arquivo.arrayBuffer() }).promise, n = pdf.numPages;
+  let capa = null;
+  try {
+    const pg = await pdf.getPage(1), vp = pg.getViewport({ scale: 640 / pg.getViewport({ scale: 1 }).width }), c = document.createElement("canvas");
+    c.width = vp.width; c.height = vp.height;
+    await pg.render({ canvasContext: c.getContext("2d"), viewport: vp }).promise;
+    capa = await new Promise(r => c.toBlob(r, "image/jpeg", 0.8));
+  } catch {}
+  try { pdf.destroy(); } catch {}
+  if (!n) throw new Error("O PDF não tem páginas.");
+  return { duracao: n === 1 ? "1 página" : `${n} páginas`, capa };
+}
 
 // ===== Provas =====
 const DESC_PROVAS = "Provas: responda às questões e veja sua nota. O resultado fica registrado para o seu gestor.";
@@ -886,9 +950,7 @@ function lerQuestoes(txt) {
 }
 
 async function textoPdf(file) {
-  const base = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
-  if (!window.pdfjsLib) await new Promise((ok, no) => { const s = document.createElement("script"); s.src = base + "pdf.min.js"; s.onload = ok; s.onerror = () => no(new Error("Não consegui carregar o leitor de PDF. Confira a internet.")); document.head.append(s); });
-  pdfjsLib.GlobalWorkerOptions.workerSrc = base + "pdf.worker.min.js";
+  await carregarPdfJs();
   const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
   let t = "";
   for (let i = 1; i <= pdf.numPages; i++) t += (await (await pdf.getPage(i)).getTextContent()).items.map(x => x.str + (x.hasEOL ? "\n" : " ")).join("") + "\n";
@@ -950,7 +1012,7 @@ async function mover(x, nova) {
     x.categoria = nova;
     desenharLista();
     if (atual === x) abrir((visiveis()[0] || {}).id || "", false);
-  } catch { alert("Não foi possível mover. Confira se os arquivos supabase-it-apr.sql, supabase-treinamento.sql e supabase-ast.sql foram executados no Supabase."); desenharLista(); }
+  } catch { alert("Não foi possível mover. Confira se os arquivos supabase-it-apr.sql e supabase-treinamento.sql foram executados no Supabase."); desenharLista(); }
 }
 
 async function excluir(x) {
