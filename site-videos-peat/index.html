@@ -3,14 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
 <meta name="robots" content="noindex">
 <title>Vídeos Peat</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2300843d'/%3E%3Cpath d='M12 9l11 7-11 7z' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4f7f3;--ink:#12211a;--mute:#5b6b62;--line:#d3ddd6;--green:#00843d;--on:#fff;--deep:#0b3d2e;--yellow:#ffd23f;--card:#fff;--err:#b3261e;--soft:#e6f1ea}
-@media (prefers-color-scheme:dark){:root{--bg:#0e1a14;--ink:#eaf2ec;--mute:#9fb2a6;--line:#25392e;--green:#38c172;--on:#04200f;--deep:#eaf2ec;--card:#15251c;--err:#ff9a90;--soft:#1b3326}}
+:root{--bg:#f3f6f2;--ink:#12211a;--mute:#566860;--line:#d6e0d9;--green:#00843d;--on:#fff;--deep:#0b3d2e;--yellow:#ffd23f;--card:#fff;--err:#b3261e;--soft:#e6f1ea;--hero1:#0b3d2e;--hero2:#00843d;--shadow:0 1px 2px rgba(11,61,46,.06),0 8px 20px rgba(11,61,46,.07);--r:14px}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1a14;--ink:#eaf2ec;--mute:#9fb2a6;--line:#25392e;--green:#38c172;--on:#04200f;--deep:#eaf2ec;--card:#15251c;--err:#ff9a90;--soft:#1b3326;--shadow:0 1px 2px rgba(0,0,0,.35),0 8px 20px rgba(0,0,0,.28)}}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
@@ -19,58 +21,137 @@ button,input,textarea,select{font:inherit}
 h1{margin:0;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-.02em;color:var(--deep)}
 .mute{color:var(--mute);margin:0}
 :is(button,input,textarea,select,summary,a):focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.ic{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.2em}
 
-/* ---------- Botões ---------- */
-.btn{font-weight:600;padding:11px 16px;border:0;border-radius:8px;background:var(--green);color:var(--on);cursor:pointer}
+/* ---------- Carregando ---------- */
+.boot{min-height:100svh;display:grid;place-content:center;justify-items:center;gap:12px;color:var(--mute)}
+.spin{width:28px;height:28px;border:3px solid var(--line);border-top-color:var(--green);border-radius:50%;animation:giro .8s linear infinite}
+@keyframes giro{to{transform:rotate(360deg)}}
+
+/* ---------- Botões e campos ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;padding:11px 18px;border:0;border-radius:10px;background:var(--green);color:var(--on);cursor:pointer}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
 .btn:disabled{opacity:.6;cursor:not-allowed}
-.btn.sec{background:none;border:1px solid var(--line);color:var(--ink);font-weight:400;padding:8px 14px}
-.btn.sec:hover:not(:disabled){border-color:var(--green)}
-
-/* ---------- Login ---------- */
-#login{min-height:100svh;display:grid;place-items:center;padding:24px}
-#f{width:min(380px,100%);display:grid;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px}
-#f p{margin:0}
+.btn.sec{background:var(--card);border:1px solid var(--line);color:var(--ink);padding:8px 14px}
+.btn.sec:hover:not(:disabled){border-color:var(--green);filter:none}
 label{display:grid;gap:4px;font-weight:600}
-input,textarea,select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+input[type=text],input[type=password],input[type=search],input[type=number],input[type=file],textarea,select{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+input[type=radio]{accent-color:var(--green);width:18px;height:18px;margin:3px 0 0;flex:none}
 textarea{resize:vertical}
-.senha{display:grid;grid-template-columns:1fr auto;gap:8px}
 .msg{min-height:1.5em;margin:0;color:var(--err)}
 .msg.ok{color:var(--green)}
+.logo{width:44px;height:44px;flex:none;border-radius:12px;background:linear-gradient(150deg,var(--hero1),var(--hero2));color:#fff;display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,132,61,.25)}
+.logo .ic{width:22px;height:22px}
+.marca{display:flex;align-items:center;gap:12px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;background:var(--soft);color:var(--deep);font-size:.78rem;font-weight:600;line-height:1.3}
+.chip .ic{width:14px;height:14px}
+.chip.cat{background:var(--yellow);color:#3a2f00}
+.chip.adm{background:var(--deep);color:var(--bg)}
+
+/* ---------- Tela de entrada ---------- */
+#login{min-height:100svh;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+.boas{background:linear-gradient(150deg,var(--hero1) 0%,#0a5a3b 55%,var(--hero2) 130%);color:#fff;padding:clamp(28px,6vw,80px);display:flex;flex-direction:column;justify-content:center;gap:22px}
+.boas .marca strong{font-size:1.25rem}
+.boas .logo{background:rgba(255,255,255,.16);box-shadow:none}
+.boas h1{color:#fff;font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1.15;max-width:20ch}
+.boas .lead{margin:0;color:rgba(255,255,255,.9);font-size:1.05rem;max-width:46ch}
+.oque{display:grid;gap:10px;margin-top:4px;max-width:540px}
+.oque li{grid-template-columns:44px 1fr;gap:2px 14px;align-items:center;padding:12px 14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:12px}
+.oque .oi{grid-row:span 2;width:44px;height:44px;border-radius:12px;background:var(--yellow);color:#3a2f00;display:grid;place-items:center}
+.oque .oi .ic{width:24px;height:24px}
+.oque b{grid-column:2;font-size:1rem}
+.oque .t{grid-column:2;font-size:.86rem;color:rgba(255,255,255,.86)}
+.entra{display:grid;place-items:center;padding:24px}
+#f{width:min(400px,100%);display:grid;grid-template-columns:minmax(0,1fr);gap:14px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px;box-shadow:var(--shadow)}
+#f p{margin:0}
+.f-tit{margin:0 0 4px;font-size:1.5rem;font-weight:800;letter-spacing:-.01em;color:var(--deep)}
+.senha{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.senha input{min-width:0}
+#f .msg:empty{min-height:0;margin:-7px 0}
+#f .btn{width:100%;padding:13px 18px}
+#f .btn.sec{width:auto}
+.dica-login{font-size:.88rem;color:var(--mute);text-align:center}
+.marca-mobile{display:none;align-items:center;gap:12px}
+.marca-mobile strong{font-size:1.2rem;color:var(--deep)}
+@media (max-width:860px){
+  #login{grid-template-columns:1fr}
+  .entra{order:-1;padding:20px 16px}
+  .boas{padding:28px 20px 40px}
+  .boas .marca{display:none}
+  .marca-mobile{display:flex}
+}
 
 /* ---------- Cabeçalho ---------- */
-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:22px 0 14px}
-header p{margin:2px 0 0;color:var(--mute)}
+.topo{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 0 16px}
+.topo h1{font-size:1.45rem}
+.topo p{margin:0;color:var(--mute);font-size:.9rem}
+.topo-dir{display:flex;align-items:center;gap:10px}
 
-/* ---------- Seções (IT / APR) ---------- */
-.secoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin:0 0 6px}
-.secao{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer;color:var(--ink);text-align:left;display:grid;gap:0;line-height:1.25}
-.secao b{font-size:1.05rem;font-weight:800}
-.secao span{font-size:.82rem;color:var(--mute)}
-.secao:hover{border-color:var(--green)}
+/* ---------- Como usar ---------- */
+.guia{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);margin:0 0 18px;padding:0 18px}
+.guia summary{cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 0;font-weight:800;list-style:none}
+.guia summary::-webkit-details-marker{display:none}
+.guia summary .ic{color:var(--green);width:22px;height:22px}
+.guia summary small{font-weight:400;color:var(--mute)}
+.guia summary::after{content:"Esconder";margin-left:auto;font-size:.82rem;font-weight:600;color:var(--green)}
+.guia:not([open]) summary::after{content:"Mostrar"}
+.passos{list-style:none;margin:0;padding:0 0 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.passos li{display:grid;grid-template-columns:36px 1fr;gap:2px 12px;align-items:start}
+.passos .n{grid-row:span 2;width:36px;height:36px;border-radius:50%;background:var(--green);color:var(--on);display:grid;place-items:center;font-weight:800}
+.passos b{grid-column:2}
+.passos .t{grid-column:2;color:var(--mute);font-size:.9rem}
+
+/* ---------- Seções (IT / APR / Treinamento / Provas) ---------- */
+.secoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:0 0 20px}
+.secao{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;text-align:left;padding:14px 16px;background:var(--card);border:2px solid var(--line);border-radius:var(--r);color:var(--ink);cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s,transform .15s,background .15s}
+.secao:hover{border-color:var(--green);transform:translateY(-1px)}
+.sic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:var(--soft);color:var(--green)}
+.sic .ic{width:25px;height:25px}
+.sline{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px}
+.snome{font-size:1.2rem;font-weight:800;line-height:1.2}
+.cnt{font-size:.72rem;font-weight:600;padding:1px 9px;border-radius:999px;background:var(--soft);color:var(--deep)}
+.cnt:empty{display:none}
+.slongo{display:block;font-size:.84rem;font-weight:600;color:var(--mute)}
+.sdesc{display:block;margin-top:4px;font-size:.85rem;color:var(--mute);line-height:1.35}
 .secao[aria-pressed=true]{background:var(--green);border-color:var(--green);color:var(--on)}
-.secao[aria-pressed=true] span{color:var(--on);opacity:.9}
-#sdesc{margin:0 0 14px}
-@media (max-width:700px){.secoes{grid-template-columns:1fr}}
+.secao[aria-pressed=true] .sic{background:rgba(255,255,255,.22);color:var(--on)}
+.secao[aria-pressed=true] :is(.slongo,.sdesc){color:var(--on);opacity:.93}
+.secao[aria-pressed=true] .cnt{background:rgba(255,255,255,.24);color:var(--on)}
 
 /* ---------- Filtros ---------- */
-.barra{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+.barra{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;margin:0 0 18px}
+.filtro{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.filtro .rot{font-weight:600;font-size:.88rem;color:var(--mute)}
 .abas{display:flex;gap:6px;flex-wrap:wrap}
-.aba{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;color:var(--ink)}
+.aba{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer;color:var(--ink)}
+.aba:hover{border-color:var(--green)}
 .aba[aria-pressed=true]{background:var(--green);border-color:var(--green);color:var(--on);font-weight:600}
-#busca{flex:1 1 200px;max-width:320px}
+.busca{position:relative;display:block;flex:1 1 220px;max-width:340px;margin-left:auto;font-weight:400}
+.busca .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--mute);pointer-events:none}
+.busca input{width:100%;padding-left:38px}
 
 /* ---------- Conteúdo ---------- */
-.grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:32px;align-items:start;padding-bottom:56px}
-.stage{position:relative;background:#000;border-radius:10px;overflow:hidden}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:28px;align-items:start;padding-bottom:56px}
+.grid>section{min-width:0}
+.stage{position:relative;background:#000;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
 #stageV{aspect-ratio:16/9}
 #v{display:block;width:100%;height:100%;object-fit:contain}
 #slide video{background:#000}
 .aviso-palco{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:#fff;background:rgba(0,0,0,.72);z-index:5}
 .aviso-palco button{margin-top:10px}
-h2{margin:18px 0 4px;font-size:1.3rem;font-weight:600}
-aside{position:sticky;top:16px}
-.grid>section{min-width:0}
-aside h2{margin:0 0 10px;font-size:1rem}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 0}
+.meta:empty{display:none}
+#t{margin:8px 0 4px;font-size:clamp(1.25rem,2.4vw,1.6rem);font-weight:800;letter-spacing:-.01em;color:var(--deep);line-height:1.25}
+#d{margin:0}
+#viewer #dica,#viewer #zdica{margin:10px 0 0;padding:9px 13px;border-radius:10px;background:var(--soft);color:var(--deep);font-size:.88rem}
+#viewer.sem-item #zdica{display:none}
+.vazio-palco{display:grid;justify-items:center;gap:8px;text-align:center;padding:48px 20px;border:2px dashed var(--line);border-radius:var(--r);background:var(--card)}
+.vazio-palco .ic{width:40px;height:40px;color:var(--green)}
+.vazio-palco b{font-size:1.1rem}
+
+aside{position:sticky;top:16px;max-height:calc(100svh - 32px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px}
+aside h2{margin:0;font-size:1.05rem;font-weight:800;color:var(--deep)}
+#lsub{margin:2px 0 12px;font-size:.84rem}
 .vazio{padding:24px 12px;text-align:center;color:var(--mute);border:1px dashed var(--line);border-radius:10px}
 
 /* ---------- Apresentação ---------- */
@@ -80,8 +161,9 @@ aside h2{margin:0 0 10px;font-size:1rem}
 #slide .pptx-preview-wrapper{background:#fff!important;box-shadow:none!important}
 #slide :is(.pptx-preview-wrapper-next,.pptx-preview-wrapper-pagination){display:none!important}
 #slide [class*="pptx-preview-wrapper-pre"]{display:none!important}
-.ctl{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 12px;padding:8px;background:#111;color:#fff}
-.ctl button{white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;border-radius:8px;padding:6px 14px;cursor:pointer}
+.ctl{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 12px;padding:10px;background:#111;color:#fff}
+.ctl button{white-space:nowrap;background:#2a2a2a;color:#fff;border:1px solid #444;border-radius:10px;padding:8px 16px;cursor:pointer}
+.ctl button:hover:not(:disabled){border-color:var(--green)}
 .ctl button:disabled{opacity:.4;cursor:default}
 .ctl output{min-width:7ch;text-align:center;font-variant-numeric:tabular-nums}
 #stageP:fullscreen{justify-content:center;background:#000}
@@ -90,92 +172,183 @@ aside h2{margin:0 0 10px;font-size:1rem}
 /* ---------- Lista ---------- */
 ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 li{display:grid;gap:4px}
-li button.item{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:128px 1fr;gap:12px;align-items:center;width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+li button.item{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:116px 1fr;gap:12px;align-items:center;width:100%;padding:8px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
 li button.item:hover{border-color:var(--green)}
 li button.item[aria-current=true]{border-color:var(--green);box-shadow:inset 5px 0 0 var(--yellow)}
 li button.item:focus-visible{outline:3px solid var(--green);outline-offset:2px}
-.thumb{position:relative;width:128px;aspect-ratio:16/9;border-radius:5px;background:#0b3d2e;color:#fff;display:grid;place-items:center;font-weight:800;font-size:.8rem;overflow:hidden}
+.thumb{position:relative;width:116px;aspect-ratio:16/9;border-radius:8px;background:linear-gradient(150deg,var(--hero1),var(--hero2));color:#fff;display:grid;place-items:center;overflow:hidden}
+.thumb .ph{display:grid;justify-items:center;gap:2px;font-weight:800;font-size:.72rem;line-height:1}
+.thumb .ph .ic{width:22px;height:22px}
 .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-li strong{display:block;font-weight:600;line-height:1.3}
-li small{color:var(--mute)}
+.thumb .badge{position:absolute;left:5px;bottom:5px;width:22px;height:22px;border-radius:6px;background:rgba(0,0,0,.68);color:#fff;display:grid;place-items:center}
+.thumb .badge .ic{width:13px;height:13px}
+li strong{display:block;font-weight:600;line-height:1.3;color:var(--ink)}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.tag{display:inline-block;padding:0 8px;border-radius:999px;background:var(--soft);color:var(--deep);font-size:.72rem;font-weight:600}
 .tag.cat{background:var(--yellow);color:#3a2f00}
-.tag{display:inline-block;margin-right:6px;padding:0 8px;border-radius:999px;background:var(--soft);color:var(--deep);font-size:.72rem;font-weight:600}
+.info{display:flex;align-items:center;gap:4px;margin-top:4px;font-size:.8rem;color:var(--mute)}
+.info:empty{display:none}
+.info .ic{width:13px;height:13px}
+.agora{display:none;align-items:center;font-size:.7rem;font-weight:800;color:#3a2f00;background:var(--yellow);padding:0 8px;border-radius:999px}
+li button.item[aria-current=true] .agora{display:inline-flex}
 .del{justify-self:end;font-size:.8rem;background:none;border:1px solid var(--line);border-radius:6px;padding:3px 10px;color:var(--err);cursor:pointer}
 .del:hover{border-color:var(--err);background:var(--card)}
 .acoes{display:flex;justify-content:flex-end;gap:6px}
-.mover{font-size:.8rem;padding:3px 8px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:3px 10px;color:var(--ink);cursor:pointer}
+.mover{font-size:.8rem;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:3px 10px;color:var(--ink);cursor:pointer}
 .mover:hover{border-color:var(--green)}
 
 /* ---------- Administração ---------- */
-#adm{margin:0 0 24px;min-width:0;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:0 16px}
-#adm summary{cursor:pointer;font-weight:600;padding:12px 0}
+#adm{margin:0 0 18px;min-width:0;border:1px solid var(--line);border-left:5px solid var(--yellow);border-radius:var(--r);background:var(--card);padding:0 18px;box-shadow:var(--shadow)}
+#adm summary{cursor:pointer;font-weight:800;padding:14px 0;display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px}
+#adm summary .ic{color:var(--green);width:22px;height:22px}
 #fa{display:grid;gap:12px;padding:4px 0 16px;max-width:560px;min-width:0}
 #fa>*{min-width:0}
 #fa :is(input,select,textarea){width:100%}
 #fa small{font-weight:400;color:var(--mute)}
 #fa input[type=file]{padding:8px}
+#detectado{font-weight:600;color:var(--green);min-height:1.5em;margin:0}
+.passos.peq{grid-template-columns:1fr;padding:0 0 4px;gap:8px}
+.passos.peq li{grid-template-columns:28px 1fr;align-items:center}
+.passos.peq .n{width:28px;height:28px;font-size:.85rem;grid-row:auto}
 .fila{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-.fila li{display:grid;gap:4px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);min-width:0}
+.fila li{display:grid;gap:4px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);min-width:0}
 .fila .nome{font-weight:400;font-size:.875rem;color:var(--mute);overflow-wrap:anywhere}
 .fila .st{min-height:1.4em;font-size:.875rem;color:var(--mute)}
 .fila .st.erro{color:var(--err)}
 .fila .st.ok{color:var(--green)}
+
+/* ---------- Provas ---------- */
 #provas{margin:0 0 24px;min-width:0}
-.pc{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between;padding:12px 14px;margin:0 0 10px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
-.pc b{display:block}.pc small{color:var(--mute)}
-#pNova{margin:0 0 20px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:0 16px}
-#pNova summary{cursor:pointer;font-weight:600;padding:12px 0}
+.intro{margin:0 0 14px;padding:12px 14px;border-radius:12px;background:var(--soft);color:var(--deep);font-size:.95rem}
+.pc{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;justify-content:space-between;padding:14px 16px;margin:0 0 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--card);box-shadow:var(--shadow)}
+.pl{display:flex;align-items:center;gap:12px;min-width:0}
+.pl .pi{width:42px;height:42px;border-radius:12px;background:var(--soft);color:var(--green);display:grid;place-items:center;flex:none}
+.pl .pi .ic{width:22px;height:22px}
+.pc b{display:block}
+.pc small{color:var(--mute)}
+.res{padding-top:6px}
+.res div{padding:6px 0;border-top:1px solid var(--line);font-size:.9rem}
+#pNova{margin:0 0 20px;border:1px solid var(--line);border-left:5px solid var(--yellow);border-radius:var(--r);background:var(--card);padding:0 18px}
+#pNova summary{cursor:pointer;font-weight:800;padding:14px 0}
 #pForm,#pFaz form{display:grid;gap:12px;padding:4px 0 16px;max-width:720px;min-width:0}
 #pForm>*{min-width:0}
 #pForm :is(input[type=text],input[type=number],input[type=file],textarea){width:100%}
-#pForm small{font-weight:400;color:var(--mute)}
-.pq{display:grid;gap:8px;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+#pForm small,#pFaz small{font-weight:400;color:var(--mute)}
+.pq{display:grid;gap:8px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
 .pq .op{display:flex;align-items:center;gap:8px;font-weight:400}
 .pq .op input[type=text]{flex:1}
-.q{margin:0 0 12px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0}
+.q{margin:0 0 12px;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--card);min-width:0}
 .q legend{font-weight:600;padding:0 6px}
-.q label{display:flex;gap:8px;align-items:flex-start;font-weight:400;padding:4px 0}
+.q label{display:flex;gap:10px;align-items:flex-start;font-weight:400;padding:8px 10px;border:1px solid transparent;border-radius:10px;cursor:pointer}
+.q label:hover{background:var(--soft)}
+.q label:has(input:checked){background:var(--soft);border-color:var(--green)}
 .q div{padding:2px 0}.q .ok{color:var(--green);font-weight:600}.q .no{color:var(--err);font-weight:600}
 .q p{margin:6px 0 0;color:var(--mute);font-size:.9rem}
-.nota{font-size:3rem;font-weight:800;margin:0;line-height:1.1}
-#detectado{font-weight:600;color:var(--green);min-height:1.5em;margin:0}
+.prog{position:sticky;top:0;z-index:3;background:var(--bg);padding:10px 0;display:grid;gap:6px}
+.prog .tx{font-size:.88rem;font-weight:600;color:var(--mute)}
+.prog .bar{height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+.prog .bar i{display:block;height:100%;width:0;background:var(--green);transition:width .2s}
+.nota{font-size:3.4rem;font-weight:800;margin:0;line-height:1.1}
+.nota.aprovada{color:var(--green)}
+.nota.reprovada{color:var(--err)}
+#pFaz h2{margin:6px 0 4px;font-size:1.35rem;font-weight:800;color:var(--deep)}
 
-@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}aside{position:static}}
-@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}aside{position:static;max-height:none;overflow:visible}}
+@media (max-width:640px){.topo{align-items:flex-start}.topo p{display:none}.busca{max-width:none;margin-left:0}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}.spin{animation-duration:2s}}
 </style>
 </head>
 <body>
 
+<!-- Ícones (usados em todo o site) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></symbol>
+  <symbol id="i-it" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></symbol>
+  <symbol id="i-apr" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M12 8v4.5M12 16h.01"/></symbol>
+  <symbol id="i-treino" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5L2 9z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5M22 9v6"/></symbol>
+  <symbol id="i-prova" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z"/><path d="M14 3v5h5M9 14.5l2 2 4-4.5"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9.5l5 2.5-5 2.5z"/></symbol>
+  <symbol id="i-slides" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+  <symbol id="i-pdf" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 2.5-3 4.5M12 17.5h.01"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+</svg>
+
+<noscript><p style="padding:24px">Para usar o site, ative o JavaScript do navegador.</p></noscript>
+
+<!-- ======== CARREGANDO ======== -->
+<div id="boot" class="boot" role="status"><span class="spin" aria-hidden="true"></span>Carregando…</div>
+
 <!-- ======== TELA DE ENTRADA ======== -->
 <main id="login" hidden>
-  <form id="f">
-    <h1>Vídeos Peat</h1>
-    <p class="mute">Digite a senha que você recebeu para assistir aos vídeos e às apresentações.</p>
-    <label for="s">Senha
-      <span class="senha">
-        <input id="s" type="password" autocomplete="current-password" required autofocus>
-        <button class="btn sec" id="ver" type="button" aria-pressed="false">Mostrar</button>
-      </span>
-    </label>
-    <button class="btn" id="ent">Entrar</button>
-    <p class="msg" id="erro" role="alert"></p>
-  </form>
+  <section class="boas">
+    <div class="marca"><span class="logo"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg></span><strong>Vídeos Peat</strong></div>
+    <h1>Instruções, riscos e treinamentos em um só lugar</h1>
+    <p class="lead">Assista aos vídeos, leia apresentações e PDFs e faça as provas direto no navegador, sem baixar nada.</p>
+    <ul class="oque" aria-label="O que você encontra aqui">
+      <li><span class="oi"><svg class="ic" aria-hidden="true"><use href="#i-it"/></svg></span><b>IT – Instrução de Trabalho</b><span class="t">O passo a passo de como fazer uma tarefa do jeito certo.</span></li>
+      <li><span class="oi"><svg class="ic" aria-hidden="true"><use href="#i-apr"/></svg></span><b>APR – Análise Preliminar de Risco</b><span class="t">Os riscos de uma atividade e como evitá-los antes de começar.</span></li>
+      <li><span class="oi"><svg class="ic" aria-hidden="true"><use href="#i-treino"/></svg></span><b>Treinamento</b><span class="t">Vídeos e apresentações para aprender e se atualizar.</span></li>
+      <li><span class="oi"><svg class="ic" aria-hidden="true"><use href="#i-prova"/></svg></span><b>Provas</b><span class="t">Teste seus conhecimentos e veja sua nota na hora.</span></li>
+    </ul>
+  </section>
+  <div class="entra">
+    <form id="f">
+      <div class="marca-mobile"><span class="logo"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg></span><strong>Vídeos Peat</strong></div>
+      <div>
+        <h2 class="f-tit">Entrar</h2>
+        <p class="mute">Digite a senha que você recebeu para ver os vídeos, apresentações, PDFs e provas.</p>
+      </div>
+      <label for="s">Senha
+        <span class="senha">
+          <input id="s" type="password" autocomplete="current-password" required autofocus>
+          <button class="btn sec" id="ver" type="button" aria-pressed="false">Mostrar</button>
+        </span>
+      </label>
+      <button class="btn" id="ent">Entrar</button>
+      <p class="msg" id="erro" role="alert"></p>
+      <p class="dica-login">Não tem a senha? Peça ao seu gestor.</p>
+    </form>
+  </div>
 </main>
 
 <!-- ======== TELA PRINCIPAL ======== -->
 <div id="app" class="wrap" hidden>
-  <header>
-    <div>
-      <h1>Vídeos Peat</h1>
-      <p>Escolha uma seção (IT, APR ou Treinamento) e clique em um item da lista. Vídeos, apresentações e PDFs abrem aqui mesmo, nesta página.</p>
+  <header class="topo">
+    <div class="marca">
+      <span class="logo"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg></span>
+      <div>
+        <h1>Vídeos Peat</h1>
+        <p>Biblioteca de ITs, APRs, treinamentos e provas</p>
+      </div>
     </div>
-    <button id="sair" class="btn sec" type="button">Sair</button>
+    <div class="topo-dir">
+      <span class="chip adm" id="admTag" hidden>Administrador</span>
+      <button id="sair" class="btn sec" type="button"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg>Sair</button>
+    </div>
   </header>
 
+  <details id="guia" class="guia" open>
+    <summary><svg class="ic" aria-hidden="true"><use href="#i-help"/></svg>Como usar este site <small>3 passos rápidos</small></summary>
+    <ol class="passos">
+      <li><span class="n">1</span><b>Escolha uma seção</b><span class="t">IT, APR, Treinamento ou Provas: são os cartões logo abaixo.</span></li>
+      <li><span class="n">2</span><b>Clique em um item da lista</b><span class="t">Cada item é um vídeo, uma apresentação ou um PDF.</span></li>
+      <li><span class="n">3</span><b>Veja aqui mesmo</b><span class="t">Tudo abre nesta página. Você não precisa baixar nada.</span></li>
+    </ol>
+  </details>
+
   <details id="adm" hidden>
-    <summary>Administração: adicionar vídeo, apresentação ou PDF</summary>
+    <summary><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>Administração: adicionar vídeo, apresentação ou PDF <span class="chip adm">só o administrador vê isto</span></summary>
     <form id="fa">
-      <p class="mute">Passo a passo: 1) escolha a seção (IT, APR ou Treinamento), 2) escolha um ou vários arquivos de uma vez (segure Ctrl ou Shift para marcar mais de um), 3) confira os títulos e clique em Enviar. O sistema reconhece sozinho se cada arquivo é vídeo, PowerPoint (.pptx) ou PDF.</p>
+      <ol class="passos peq">
+        <li><span class="n">1</span><span>Escolha a seção (IT, APR ou Treinamento).</span></li>
+        <li><span class="n">2</span><span>Escolha um ou vários arquivos de uma vez (segure Ctrl ou Shift para marcar mais de um).</span></li>
+        <li><span class="n">3</span><span>Confira os títulos e clique em Enviar. O sistema reconhece sozinho se é vídeo, PowerPoint (.pptx) ou PDF.</span></li>
+      </ol>
       <label for="ak">Seção
         <select id="ak" required>
           <option value="">Escolha…</option>
@@ -197,12 +370,23 @@ li small{color:var(--mute)}
   </details>
 
   <div class="secoes" role="group" aria-label="Seção">
-    <button class="secao" type="button" data-s="it" aria-pressed="true"><b>IT</b><span id="n-it">Instruções de Trabalho</span></button>
-    <button class="secao" type="button" data-s="apr" aria-pressed="false"><b>APR</b><span id="n-apr">Análise Preliminar de Risco</span></button>
-    <button class="secao" type="button" data-s="treinamento" aria-pressed="false"><b>Treinamento</b><span id="n-treinamento">Vídeos e apresentações</span></button>
-    <button class="secao" type="button" data-s="provas" aria-pressed="false"><b>Provas</b><span id="n-provas">Teste seus conhecimentos</span></button>
+    <button class="secao" type="button" data-s="it" aria-pressed="true">
+      <span class="sic"><svg class="ic" aria-hidden="true"><use href="#i-it"/></svg></span>
+      <span><span class="sline"><span class="snome">IT</span><span class="cnt" id="n-it"></span></span><span class="slongo">Instrução de Trabalho</span><span class="sdesc">Passo a passo de como fazer uma tarefa do jeito certo.</span></span>
+    </button>
+    <button class="secao" type="button" data-s="apr" aria-pressed="false">
+      <span class="sic"><svg class="ic" aria-hidden="true"><use href="#i-apr"/></svg></span>
+      <span><span class="sline"><span class="snome">APR</span><span class="cnt" id="n-apr"></span></span><span class="slongo">Análise Preliminar de Risco</span><span class="sdesc">Os riscos de uma atividade e como evitá-los antes de começar.</span></span>
+    </button>
+    <button class="secao" type="button" data-s="treinamento" aria-pressed="false">
+      <span class="sic"><svg class="ic" aria-hidden="true"><use href="#i-treino"/></svg></span>
+      <span><span class="sline"><span class="snome">Treinamento</span><span class="cnt" id="n-treinamento"></span></span><span class="slongo">Vídeos e apresentações</span><span class="sdesc">Conteúdos para você aprender e se manter atualizado.</span></span>
+    </button>
+    <button class="secao" type="button" data-s="provas" aria-pressed="false">
+      <span class="sic"><svg class="ic" aria-hidden="true"><use href="#i-prova"/></svg></span>
+      <span><span class="sline"><span class="snome">Provas</span><span class="cnt" id="n-provas"></span></span><span class="slongo">Teste seus conhecimentos</span><span class="sdesc">Responda às perguntas e veja sua nota na hora.</span></span>
+    </button>
   </div>
-  <p class="mute" id="sdesc"></p>
 
   <section id="provas" hidden>
     <div id="pLista"></div>
@@ -230,20 +414,23 @@ li small{color:var(--mute)}
   </section>
 
   <div class="barra">
-    <div class="abas" role="group" aria-label="Filtrar por formato">
-      <button class="aba" type="button" data-f="todos" aria-pressed="true">Qualquer formato</button>
-      <button class="aba" type="button" data-f="video" aria-pressed="false">Vídeos</button>
-      <button class="aba" type="button" data-f="apresentacao" aria-pressed="false">Apresentações</button>
-      <button class="aba" type="button" data-f="pdf" aria-pressed="false">PDFs</button>
+    <div class="filtro">
+      <span class="rot" id="rotf">Mostrar:</span>
+      <div class="abas" role="group" aria-labelledby="rotf">
+        <button class="aba" type="button" data-f="todos" aria-pressed="true">Tudo</button>
+        <button class="aba" type="button" data-f="video" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-video"/></svg>Vídeos</button>
+        <button class="aba" type="button" data-f="apresentacao" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-slides"/></svg>Apresentações</button>
+        <button class="aba" type="button" data-f="pdf" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-pdf"/></svg>PDFs</button>
+      </div>
     </div>
-    <input id="busca" type="search" placeholder="Buscar pelo título…" aria-label="Buscar pelo título" maxlength="60">
+    <label class="busca"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><input id="busca" type="search" placeholder="Buscar pelo título…" aria-label="Buscar pelo título" maxlength="60"></label>
   </div>
 
   <div class="grid">
-    <section aria-live="polite">
+    <section id="viewer" aria-live="polite">
       <!-- Vídeo -->
       <div class="stage" id="stageV"><video id="v" controls playsinline preload="metadata" controlslist="nodownload" disablepictureinpicture></video></div>
-      <!-- Apresentação -->
+      <!-- Apresentação ou PDF -->
       <div class="stage" id="stageP" hidden>
         <div id="caixa"><div id="slide"></div></div>
         <div class="ctl">
@@ -253,12 +440,20 @@ li small{color:var(--mute)}
           <button id="tela" type="button">Tela cheia</button>
         </div>
       </div>
+      <!-- Seção sem itens -->
+      <div class="vazio-palco" id="vazioP" hidden>
+        <svg class="ic" aria-hidden="true"><use href="#i-folder"/></svg>
+        <b>Nada por aqui ainda</b>
+        <span class="mute" id="vazioD"></span>
+      </div>
+      <div class="meta" id="meta"></div>
       <h2 id="t"></h2>
       <p class="mute" id="d"></p>
-      <p class="mute" id="dica" hidden>Dica: use as setas ← → do teclado para trocar de slide. Se houver vídeo no slide, clique no botão de reproduzir dele.</p>
+      <p class="mute" id="dica" hidden>Dica: para trocar de slide, use os botões ou as setas ← → do teclado. Se houver vídeo no slide, clique no botão de reproduzir dele.</p>
     </section>
-    <aside>
+    <aside aria-label="Lista de itens">
       <h2 id="lt">Todos os itens</h2>
+      <p class="mute" id="lsub"></p>
       <ul id="list"></ul>
       <p class="vazio" id="vazio" hidden></p>
     </aside>
@@ -271,15 +466,30 @@ li small{color:var(--mute)}
 <script>
 "use strict";
 const $ = s => document.querySelector(s), v = $("#v"), list = $("#list");
+const NS = "http://www.w3.org/2000/svg";
+// Cria um ícone a partir do "sprite" que está no começo da página.
+const ic = id => {
+  const s = document.createElementNS(NS, "svg"), u = document.createElementNS(NS, "use");
+  s.setAttribute("class", "ic"); s.setAttribute("aria-hidden", "true");
+  u.setAttribute("href", "#" + id); s.append(u); return s;
+};
+const mk = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+
 const DIA = 24 * 60 * 60 * 1000;           // senha comum: aparelho lembrado por 24 h (ADM: sem prazo)
 const LARGURA_SLIDE = 960;                  // tamanho interno de desenho dos slides (depois é escalado)
 const PPTX_MIME = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
 const ROTULO = { video: "Vídeo", apresentacao: "Apresentação", pdf: "PDF" };
-const SECOES = {
-  it:  { titulo: "ITs – Instruções de Trabalho", nome: "IT", desc: "IT = Instrução de Trabalho: o passo a passo de como executar uma tarefa corretamente." },
-  apr: { titulo: "APRs – Análises Preliminares de Risco", nome: "APR", desc: "APR = Análise Preliminar de Risco: os riscos de uma atividade e como evitá-los antes de começar." },
-  treinamento: { titulo: "Treinamentos", nome: "Treinamento", desc: "Treinamento: vídeos e apresentações para aprender e se atualizar." },
+const FORMATOS = {
+  video: { icone: "i-video", sigla: "" },
+  apresentacao: { icone: "i-slides", sigla: "PPTX" },
+  pdf: { icone: "i-pdf", sigla: "PDF" },
 };
+const SECOES = {
+  it:  { titulo: "ITs – Instruções de Trabalho", nome: "IT", longo: "Instrução de Trabalho", icone: "i-it", desc: "IT = Instrução de Trabalho: o passo a passo de como executar uma tarefa corretamente." },
+  apr: { titulo: "APRs – Análises Preliminares de Risco", nome: "APR", longo: "Análise Preliminar de Risco", icone: "i-apr", desc: "APR = Análise Preliminar de Risco: os riscos de uma atividade e como evitá-los antes de começar." },
+  treinamento: { titulo: "Treinamentos", nome: "Treinamento", longo: "Vídeos e apresentações", icone: "i-treino", desc: "Treinamento: vídeos e apresentações para aprender e se atualizar." },
+};
+const contar = n => `${n} ${n === 1 ? "item" : "itens"}`;
 const cfg = window.PEAT_CONFIG || {};
 const MAX_MB = Number(cfg.tamanhoMaxMB) || 50;
 const configurado = /^https:\/\/.+\.supabase\.co\/?$/.test(cfg.url || "") && !/COLE/.test(cfg.url) && !!cfg.chave && !/COLE/.test(cfg.chave)
@@ -290,6 +500,7 @@ let catalogo = [], atual = null, adm = false, renovando = false;
 let filtro = "todos", secao = "it", termo = "";
 let ppt = null;                              // { pv, idx, total, token } da apresentação aberta
 let cancelaPpt = 0;                          // aumenta a cada troca de item, para ignorar respostas antigas
+let nProvas = null;                          // quantas provas existem (aparece no cartão "Provas")
 
 // ---------- utilidades ----------
 const lerLS = k => { try { return localStorage.getItem(k); } catch { return null; } };
@@ -305,6 +516,7 @@ const tipoDe = x => {
   return x && (x.tipo === "apresentacao" || x.tipo === "pdf") ? x.tipo : "video";
 };
 const reduzir = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+const pronto = () => { $("#boot").hidden = true; };
 
 async function assinar(caminho, segundos = 4 * 3600) {
   const { data, error } = await sb.storage.from("videos").createSignedUrl(caminho, segundos);
@@ -357,8 +569,13 @@ function limparPpt() {
 
 function mostrarLogin() {
   limparVideo(); limparPpt();
-  $("#app").hidden = true; $("#adm").hidden = true; $("#login").hidden = false;
-  list.replaceChildren(); catalogo = []; atual = null; adm = false;
+  list.replaceChildren(); catalogo = []; atual = null; adm = false; nProvas = null;
+  // volta ao estado inicial, para o próximo login não abrir numa tela esquisita
+  secao = "it"; filtro = "todos"; termo = ""; $("#busca").value = "";
+  document.querySelectorAll(".aba").forEach(o => o.setAttribute("aria-pressed", String(o.dataset.f === "todos")));
+  mostrarProvas(false); voltarProvas();
+  $("#app").hidden = true; $("#adm").hidden = true; $("#admTag").hidden = true; $("#login").hidden = false;
+  pronto();
 }
 
 async function sair() {
@@ -368,18 +585,29 @@ async function sair() {
   mostrarLogin();
 }
 
-// ---------- abrir um item (vídeo ou apresentação) ----------
+// ---------- abrir um item (vídeo, apresentação ou PDF) ----------
+function renderMeta(x) {
+  const s = SECOES[catDe(x)], t = tipoDe(x), a = mk("span", "chip cat"), b = mk("span", "chip");
+  a.append(ic(s.icone), `${s.nome} · ${s.longo}`);
+  b.append(ic(FORMATOS[t].icone), ROTULO[t]);
+  $("#meta").replaceChildren(a, b);
+  if (x.duracao) $("#meta").append(mk("span", "chip", x.duracao));
+}
+
 async function abrir(id, tocar) {
   const x = catalogo.find(i => i.id === id) || visiveis()[0];
   if (!x) {
-    atual = null; limparVideo(); limparPpt(); palco("video"); document.title = "Vídeos Peat";
-    $("#t").textContent = "Nenhum item disponível nesta seção.";
-    $("#d").textContent = adm ? "Use \"Administração\" no topo para adicionar o primeiro." : "Volte mais tarde.";
+    atual = null; limparVideo(); limparPpt(); palco("nenhum"); document.title = "Vídeos Peat";
+    $("#viewer").classList.add("sem-item"); $("#vazioP").hidden = false;
+    $("#meta").replaceChildren(); $("#t").textContent = ""; $("#d").textContent = "";
+    $("#vazioD").textContent = adm ? "Use “Administração”, no topo da página, para adicionar o primeiro item." : "Ainda não há nada nesta seção. Volte mais tarde.";
     return;
   }
+  $("#viewer").classList.remove("sem-item"); $("#vazioP").hidden = true;
   if (!visiveis().includes(x)) { secao = catDe(x); filtro = "todos"; termo = ""; $("#busca").value = ""; document.querySelectorAll(".aba").forEach(o => o.setAttribute("aria-pressed", String(o.dataset.f === "todos"))); desenharLista(); }
   atual = x;
   $("#t").textContent = x.titulo; $("#d").textContent = x.descricao || "";
+  renderMeta(x);
   document.title = x.titulo + " – Vídeos Peat";
   marcarAtual();
   history.replaceState(null, "", "#" + x.id);
@@ -490,17 +718,15 @@ addEventListener("keydown", e => {
 });
 
 // ---------- lista, filtros e busca ----------
-const semAcento = t => String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const semAcento = t => String(t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 const visiveis = () => catalogo.filter(x => catDe(x) === secao && (filtro === "todos" || tipoDe(x) === filtro) && (!termo || semAcento(x.titulo).includes(termo)));
 
 function atualizarSecoes() {
   const n = c => catalogo.filter(x => catDe(x) === c).length;
-  $("#n-it").textContent = `Instruções de Trabalho · ${n("it")}`;
-  $("#n-apr").textContent = `Análise Preliminar de Risco · ${n("apr")}`;
-  $("#n-treinamento").textContent = `Vídeos e apresentações · ${n("treinamento")}`;
+  for (const c of Object.keys(SECOES)) $("#n-" + c).textContent = contar(n(c));
+  $("#n-provas").textContent = nProvas == null ? "" : nProvas === 1 ? "1 prova" : nProvas + " provas";
   document.querySelectorAll(".secao").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === secao)));
   if (secao !== "provas" && !$("#provas").hidden) mostrarProvas(false);
-  $("#sdesc").textContent = secao === "provas" ? DESC_PROVAS : SECOES[secao].desc;
 }
 
 function trocarSecao(c) {
@@ -516,19 +742,25 @@ function marcarAtual() {
 }
 
 function desenharLista() {
-  const itens = visiveis();
+  if (secao === "provas") { atualizarSecoes(); return; }
+  const itens = visiveis(), S = SECOES[secao];
   list.replaceChildren();
   for (const x of itens) {
-    const li = document.createElement("li"), b = document.createElement("button");
-    b.type = "button"; b.className = "item"; b.dataset.id = x.id;
-    b.innerHTML = '<span class="thumb"></span><span><strong></strong><small><span class="tag cat"></span><span class="tag"></span><span class="info"></span></small></span>';
-    const th = b.querySelector(".thumb");
-    th.append({ apresentacao: "PPTX", pdf: "PDF" }[tipoDe(x)] || "▶");
-    if (x.capaUrl) { const im = document.createElement("img"); im.alt = ""; im.loading = "lazy"; im.src = x.capaUrl; th.append(im); }
-    b.querySelector("strong").textContent = x.titulo;
-    b.querySelector(".tag.cat").textContent = SECOES[catDe(x)].nome;
-    b.querySelector(".tag:not(.cat)").textContent = ROTULO[tipoDe(x)];
-    b.querySelector(".info").textContent = x.duracao || "";
+    const tp = tipoDe(x), li = document.createElement("li"), b = mk("button", "item");
+    b.type = "button"; b.dataset.id = x.id;
+    const th = mk("span", "thumb"), ph = mk("span", "ph"), tx = mk("span", "txt");
+    ph.append(ic(FORMATOS[tp].icone));
+    if (FORMATOS[tp].sigla) ph.append(mk("b", "", FORMATOS[tp].sigla));
+    th.append(ph);
+    if (x.capaUrl) {
+      const im = document.createElement("img"); im.alt = ""; im.loading = "lazy"; im.src = x.capaUrl; th.append(im);
+      const bd = mk("span", "badge"); bd.append(ic(FORMATOS[tp].icone)); th.append(bd);
+    }
+    const tags = mk("span", "tags"), info = mk("span", "info");
+    tags.append(mk("span", "tag cat", SECOES[catDe(x)].nome), mk("span", "tag", ROTULO[tp]), mk("span", "agora", "Em exibição"));
+    if (x.duracao) { if (tp === "video") info.append(ic("i-clock")); info.append(x.duracao); }
+    tx.append(mk("strong", "", x.titulo), tags, info);
+    b.append(th, tx);
     b.onclick = () => abrir(x.id, true);
     li.append(b);
     if (adm) {
@@ -549,7 +781,8 @@ function desenharLista() {
   const vz = $("#vazio");
   vz.hidden = itens.length > 0;
   if (!itens.length) vz.textContent = catalogo.length ? "Nada encontrado nesta seção com esse filtro ou busca." : "Ainda não há nada por aqui.";
-  $("#lt").textContent = SECOES[secao].titulo + (filtro === "video" ? " · só vídeos" : filtro === "apresentacao" ? " · só apresentações" : filtro === "pdf" ? " · só PDFs" : "");
+  $("#lt").textContent = S.titulo + (filtro === "video" ? " · só vídeos" : filtro === "apresentacao" ? " · só apresentações" : filtro === "pdf" ? " · só PDFs" : "");
+  $("#lsub").textContent = S.desc;
   atualizarSecoes();
   marcarAtual();
 }
@@ -576,9 +809,13 @@ async function carregarCatalogo() {
 
 async function abrirApp(abrirId) {
   catalogo = await carregarCatalogo();
-  $("#login").hidden = true; $("#app").hidden = false; $("#adm").hidden = !adm;
+  $("#login").hidden = true; $("#app").hidden = false; $("#adm").hidden = !adm; $("#admTag").hidden = !adm; pronto();
   desenharLista();
   abrir(abrirId ?? location.hash.slice(1), false);
+  // quantas provas existem (só para mostrar o número no cartão "Provas")
+  sb.from("provas").select("id", { count: "exact", head: true }).then(({ count, error }) => {
+    if (!error && typeof count === "number") { nProvas = count; atualizarSecoes(); }
+  }).catch(() => {});
   const caminhos = catalogo.map(x => x.capa).filter(Boolean);
   if (!caminhos.length) return;
   sb.storage.from("videos").createSignedUrls(caminhos, 3600).then(({ data: urls }) => {
@@ -602,11 +839,16 @@ async function iniciarSessao() {
   return "ok";
 }
 
+// ---------- "Como usar": lembra se a pessoa escondeu ----------
+const guia = $("#guia");
+if (lerLS("peat:guia") === "fechado") guia.open = false;
+guia.addEventListener("toggle", () => gravarLS("peat:guia", guia.open ? "aberto" : "fechado"));
+
 // ---------- ADM: adicionar e excluir ----------
 const aviso = (txt, ok) => { const a = $("#aviso"); a.textContent = txt; a.classList.toggle("ok", !!ok); };
 
 function slug(t) {
-  return t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
+  return t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
     .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40) || "item";
 }
 
@@ -789,7 +1031,7 @@ function adaptadorPdf(pdf) {
 }
 async function abrirPdf(x) {
   const meu = cancelaPpt, palcoP = $("#stageP");
-  $("#dica").textContent = "Dica: use as setas ← → do teclado para trocar de página.";
+  $("#dica").textContent = "Dica: para trocar de página, use os botões ou as setas ← → do teclado.";
   avisoPalco(palcoP, "Carregando PDF…");
   try {
     await carregarPdfJs();
@@ -820,9 +1062,7 @@ async function lerPdf(arquivo) {
 }
 
 // ===== Provas =====
-const DESC_PROVAS = "Provas: responda às questões e veja sua nota. O resultado fica registrado para o seu gestor.";
 let provas = [], qn = 0;
-const mk = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
 const pAviso = (t, ok) => { const a = $("#pAviso"); a.textContent = t; a.classList.toggle("ok", !!ok); };
 const SEM_TABELA = "Falta rodar o arquivo supabase-provas.sql no Supabase (veja o LEIA-ME).";
 
@@ -836,18 +1076,21 @@ async function carregarProvas() {
   const box = $("#pLista"); box.textContent = "Carregando…";
   const { data, error } = await sb.from("provas").select("id,titulo,nota_minima,questoes,criada_em").order("criada_em", { ascending: false });
   if (error) { box.textContent = /provas|relation|schema/i.test(error.message || "") ? SEM_TABELA : "Não foi possível carregar as provas. " + error.message; return; }
-  provas = data || []; box.textContent = "";
+  provas = data || []; nProvas = provas.length; atualizarSecoes(); box.textContent = "";
+  box.append(mk("p", "intro", "Como funciona: escolha uma prova, responda a todas as perguntas e clique em Finalizar. Você vê a sua nota na hora e o resultado fica registrado para o seu gestor."));
   if (!provas.length) box.append(mk("p", "mute", adm ? "Nenhuma prova ainda. Use \"Administração: criar prova\" abaixo." : "Nenhuma prova disponível por enquanto."));
   provas.forEach(p => {
-    const c = mk("article", "pc"), t = mk("div"), b = mk("div"), f = mk("button", "btn", "Fazer prova");
+    const c = mk("article", "pc"), l = mk("div", "pl"), pi = mk("span", "pi"), t = mk("div"), b = mk("div"), f = mk("button", "btn", "Fazer prova");
+    pi.append(ic("i-prova"));
     t.append(mk("b", "", p.titulo), mk("small", "", `${p.questoes.length} questões · nota mínima ${p.nota_minima}%`));
+    l.append(pi, t);
     f.type = "button"; f.onclick = () => fazer(p); b.append(f);
     if (adm) {
       const r = mk("button", "btn sec", "Resultados"), x = mk("button", "btn sec", "Excluir");
       r.type = "button"; x.type = "button"; r.onclick = () => resultados(p, c); x.onclick = () => excluirProva(p);
       b.append(" ", r, " ", x);
     }
-    c.append(t, b); box.append(c);
+    c.append(l, b); box.append(c);
   });
 }
 
@@ -868,9 +1111,13 @@ async function excluirProva(p) {
 
 // Fazer a prova: todas as perguntas numa página; a correção é feita aqui e o resultado vai para o Supabase.
 function fazer(p) {
-  const z = $("#pFaz"), f = mk("form"), nl = mk("label", "", "Seu nome completo"), ni = mk("input");
+  const z = $("#pFaz"), f = mk("form"), nl = mk("label"), ni = mk("input");
   z.textContent = ""; z.hidden = false; $("#pLista").hidden = true; $("#pNova").hidden = true;
-  ni.required = true; ni.minLength = 2; ni.maxLength = 120; nl.append(ni); f.append(mk("h2", "", p.titulo), nl);
+  ni.type = "text"; ni.required = true; ni.minLength = 2; ni.maxLength = 120; ni.autocomplete = "name";
+  nl.append(mk("span", "", "Seu nome completo"), mk("small", "", "O seu nome aparece junto com a nota para o seu gestor."), ni);
+  const total = p.questoes.length, prog = mk("div", "prog"), ptx = mk("span", "tx"), bar = mk("div", "bar"), fill = mk("i");
+  bar.append(fill); prog.append(ptx, bar);
+  f.append(mk("h2", "", p.titulo), nl, prog);
   p.questoes.forEach((q, i) => {
     const fs = mk("fieldset", "q"); fs.append(mk("legend", "", `${i + 1}. ${q.e}`));
     q.o.forEach((o, k) => { const l = mk("label"), r = mk("input"); r.type = "radio"; r.name = "r" + i; r.value = k; l.append(r, `${"ABCD"[k]}) ${o}`); fs.append(l); });
@@ -878,12 +1125,17 @@ function fazer(p) {
   });
   const ok = mk("button", "btn", "Finalizar prova"), vo = mk("button", "btn sec", "Cancelar");
   ok.type = "submit"; vo.type = "button"; vo.onclick = voltarProvas; f.append(ok, vo); z.append(f);
+  const atualizarProg = () => {
+    const n = p.questoes.filter((_, i) => f.querySelector(`input[name=r${i}]:checked`)).length;
+    ptx.textContent = `${n} de ${total} perguntas respondidas`; fill.style.width = (100 * n / total) + "%";
+  };
+  f.addEventListener("change", atualizarProg); atualizarProg();
   f.onsubmit = async e => {
     e.preventDefault();
     const resp = p.questoes.map((_, i) => { const r = f.querySelector(`input[name=r${i}]:checked`); return r ? +r.value : -1; });
     if (resp.includes(-1) && !confirm("Há perguntas sem resposta. Finalizar mesmo assim?")) return;
     ok.disabled = true;
-    const total = p.questoes.length, acertos = resp.filter((r, i) => r === p.questoes[i].c).length, nota = Math.round(100 * acertos / total), aprovado = nota >= p.nota_minima;
+    const acertos = resp.filter((r, i) => r === p.questoes[i].c).length, nota = Math.round(100 * acertos / total), aprovado = nota >= p.nota_minima;
     const { error } = await sb.from("resultados").insert({ prova_id: p.id, prova_titulo: p.titulo, nome: ni.value.trim(), acertos, total, nota, aprovado, respostas: resp });
     mostrarNota(p, resp, nota, aprovado, error);
   };
@@ -892,7 +1144,7 @@ function fazer(p) {
 
 function mostrarNota(p, resp, nota, aprovado, erro) {
   const z = $("#pFaz"); z.textContent = "";
-  z.append(mk("h2", "", "Sua nota"), mk("p", "nota", nota + "%"),
+  z.append(mk("h2", "", "Sua nota"), mk("p", "nota " + (aprovado ? "aprovada" : "reprovada"), nota + "%"),
     mk("p", "", `Nota mínima exigida: ${p.nota_minima}%. ` + (aprovado ? "Parabéns, você foi aprovado(a)!" : "Recomendamos revisar o material.")),
     mk("p", erro ? "msg" : "mute", erro ? "Atenção: não consegui registrar o resultado. " + (/resultados|relation/i.test(erro.message || "") ? SEM_TABELA : erro.message || "") : "Prova concluída. O resultado foi registrado para o seu gestor."),
     mk("h3", "", "Revisão"));
@@ -1072,7 +1324,7 @@ setInterval(() => { if (!$("#app").hidden && !adm && Date.now() - entrada() > DI
 
 (async () => {
   if (!configurado) {
-    $("#login").hidden = false; $("#ent").disabled = true;
+    $("#login").hidden = false; $("#ent").disabled = true; pronto();
     $("#erro").textContent = "Falta preencher o arquivo config.js com os dados do Supabase.";
     return;
   }
@@ -1084,7 +1336,7 @@ setInterval(() => { if (!$("#app").hidden && !adm && Date.now() - entrada() > DI
       await sair();   // prazo vencido ou conta sem acesso
     } catch { /* sem conexão: mantém a sessão e mostra o login */ }
   }
-  $("#login").hidden = false;
+  $("#login").hidden = false; pronto();
 })();
 </script>
 </body>
