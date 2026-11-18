@@ -1450,6 +1450,37 @@ $("#f").onsubmit = async e => {
 $("#sair").onclick = sair;
 addEventListener("hashchange", () => { if (!$("#app").hidden) abrir(location.hash.slice(1), false); });
 setInterval(() => { if (!$("#app").hidden && !adm && Date.now() - entrada() > DIA) sair(); }, 60000);
+
+// ---------- Início: decide o que mostrar assim que a página abre ----------
+// Espera uma promessa por no máximo "ms"; se passar do prazo, dá erro (assim o "Carregando…" nunca fica para sempre).
+const comTempo = (p, ms) => {
+  let t;
+  const limite = new Promise((_, no) => { t = setTimeout(() => no(new Error("tempo esgotado")), ms); });
+  return Promise.race([p, limite]).finally(() => clearTimeout(t));
+};
+
+(async function iniciar() {
+  if (!sb) {
+    mostrarLogin();
+    $("#erro").textContent = "O site ainda não foi configurado. Confira o arquivo config.js (url, chave, emailComum e emailAdm).";
+    return;
+  }
+  let msg = "";
+  try {
+    const { data } = await comTempo(sb.auth.getSession(), 15000);
+    if (data && data.session) {
+      const r = await comTempo(iniciarSessao(), 30000);
+      if (r === "ok") return;
+      try { await sb.auth.signOut(); } catch {}
+      apagarLS("peat:entrada");
+      msg = r === "expirou" ? "Sua sessão expirou. Digite a senha de novo." : "Esta senha não tem acesso liberado.";
+    }
+  } catch {
+    msg = "Não foi possível carregar. Confira a internet e tente de novo.";
+  }
+  mostrarLogin();
+  $("#erro").textContent = msg;
+})();
 </script>
 </body>
 </html>
