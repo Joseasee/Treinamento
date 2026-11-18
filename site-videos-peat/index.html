@@ -560,7 +560,6 @@ li button.item[aria-current=true] .agora{display:inline-flex}
 <script src="zoom.js?v=2"></script>
 <script src="supabase.js"></script>
 <script src="config.js"></script>
-<script src="pptx-preview.js"></script>
 <script>
 "use strict";
 const $ = s => document.querySelector(s), v = $("#v"), list = $("#list");
@@ -592,7 +591,7 @@ const cfg = window.PEAT_CONFIG || {};
 const MAX_MB = Number(cfg.tamanhoMaxMB) || 50;
 const configurado = /^https:\/\/.+\.supabase\.co\/?$/.test(cfg.url || "") && !/COLE/.test(cfg.url) && !!cfg.chave && !/COLE/.test(cfg.chave)
   && !!cfg.emailComum && !!cfg.emailAdm;
-const sb = configurado ? supabase.createClient(cfg.url, cfg.chave) : null;
+const sb = configurado && window.supabase ? supabase.createClient(cfg.url, cfg.chave) : null;
 
 let catalogo = [], atual = null, adm = false, renovando = false;
 let filtro = "todos", secao = "it", termo = "";
@@ -771,7 +770,26 @@ v.addEventListener("error", async () => {
 });
 
 // ---------- apresentações ----------
+// Leitor de PowerPoint (pptx-preview): usa o arquivo pptx-preview.js da pasta do site, se existir;
+// se não existir, baixa de um CDN. Os .pptx continuam no Supabase; isto é só o "programa" que desenha os slides.
+let pptxPronto = null;
+function carregarPptx() {
+  if (window.pptxPreview) return Promise.resolve();
+  const tenta = src => new Promise((ok, no) => {
+    const sc = document.createElement("script"); sc.src = src;
+    sc.onload = () => { if (window.pptxPreview) ok(); else { sc.remove(); no(); } };
+    sc.onerror = () => { sc.remove(); no(); };
+    document.head.append(sc);
+  });
+  return pptxPronto || (pptxPronto = tenta("pptx-preview.js")
+    .catch(() => tenta("https://cdn.jsdelivr.net/npm/pptx-preview@1.0.7/dist/pptx-preview.umd.js"))
+    .catch(() => tenta("https://unpkg.com/pptx-preview@1.0.7/dist/pptx-preview.umd.js"))
+    .catch(() => { pptxPronto = null; throw new Error("Não consegui carregar o leitor de PowerPoint. Confira a internet e tente de novo."); }));
+}
+const erroLeitor = e => e && /leitor de PowerPoint/.test(e.message || "");
+
 async function desenhar(buf, altura) {
+  await carregarPptx();
   const host = document.createElement("div");
   const pv = pptxPreview.init(host, { width: LARGURA_SLIDE, height: altura, mode: "slide" });
   await pv.preview(buf);
@@ -803,7 +821,7 @@ async function abrirPpt(x) {
     irSlide(0);
     ajustar();
   } catch (e) {
-    if (meu === cancelaPpt) avisoPalco(palcoP, "Não foi possível abrir esta apresentação. O arquivo pode estar corrompido ou a internet falhou.", () => abrir(x.id, false));
+    if (meu === cancelaPpt) avisoPalco(palcoP, erroLeitor(e) ? e.message : "Não foi possível abrir esta apresentação. O arquivo pode estar corrompido ou a internet falhou.", () => abrir(x.id, false));
   }
 }
 
@@ -1063,7 +1081,7 @@ async function enviarUm({ arq, tipo }, titulo, descricao, cf, categoria, ordem, 
     say("Conferindo o arquivo…");
     let info;
     try { info = tipo === "apresentacao" ? await lerPpt(arq) : tipo === "pdf" ? await lerPdf(arq) : await lerVideo(arq); }
-    catch (er) { if (tipo === "pdf") throw new Error("Não consegui abrir esse PDF. Confira se ele não está corrompido nem protegido por senha."); if (tipo === "apresentacao") throw new Error("Não consegui abrir esse PowerPoint. Confira se o arquivo não está corrompido."); info = { duracao: "", capa: null }; }
+    catch (er) { if (tipo === "pdf") throw new Error("Não consegui abrir esse PDF. Confira se ele não está corrompido nem protegido por senha."); if (tipo === "apresentacao") throw erroLeitor(er) ? er : new Error("Não consegui abrir esse PowerPoint. Confira se o arquivo não está corrompido."); info = { duracao: "", capa: null }; }
     const imagem = cf || info.capa;
     const capa = imagem ? `${id}.jpg` : "";
 
@@ -1428,7 +1446,7 @@ $("#ver").onclick = () => {
 $("#f").onsubmit = async e => {
   e.preventDefault();
   const btn = $("#ent"), erro = $("#erro");
-  if (btn.disabled) return;
+  if (btn.disabled || !sb) return;
   btn.disabled = true; erro.textContent = "";
   if (!navigator.onLine) { erro.textContent = "Sem internet. Conecte-se e tente de novo."; btn.disabled = false; return; }
   try {
@@ -1462,7 +1480,9 @@ const comTempo = (p, ms) => {
 (async function iniciar() {
   if (!sb) {
     mostrarLogin();
-    $("#erro").textContent = "O site ainda não foi configurado. Confira o arquivo config.js (url, chave, emailComum e emailAdm).";
+    $("#erro").textContent = !configurado
+      ? "O site ainda não foi configurado. Confira o arquivo config.js (url, chave, emailComum e emailAdm)."
+      : "Não consegui carregar o arquivo supabase.js. Confira se ele está na mesma pasta do index.html.";
     return;
   }
   let msg = "";
