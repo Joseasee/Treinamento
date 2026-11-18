@@ -1450,7 +1450,6 @@ $("#f").onsubmit = async e => {
 $("#sair").onclick = sair;
 addEventListener("hashchange", () => { if (!$("#app").hidden) abrir(location.hash.slice(1), false); });
 setInterval(() => { if (!$("#app").hidden && !adm && Date.now() - entrada() > DIA) sair(); }, 60000);
-})();
 </script>
 </body>
 </html>
