@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <meta name="robots" content="noindex">
+<script>try{if(localStorage.getItem("tema")==="dark")document.documentElement.classList.add("dark")}catch(e){}</script>
 <title>Vídeos Peat</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%236B1025'/%3E%3Cpath d='M12 9l11 7-11 7z' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,6 +38,7 @@
            0 8px 20px rgba(0,0,0,.10);
 
   --r:14px;
+  color-scheme:light;
 }
   html.dark{
   --bg:#101010;
@@ -63,6 +65,7 @@
 
   --shadow:0 1px 2px rgba(0,0,0,.35),
            0 8px 20px rgba(0,0,0,.30);
+  color-scheme:dark;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -161,6 +164,20 @@ textarea{resize:vertical}
 .topo h1{font-size:1.45rem}
 .topo p{margin:0;color:var(--mute);font-size:.9rem}
 .topo-dir{display:flex;align-items:center;gap:10px}
+
+/* ---------- Logo da Triunfo (o arquivo é definido em ARQUIVO_LOGO, no script) ---------- */
+.logo-img{display:block;flex:none;height:44px;width:auto;max-width:180px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px;color:transparent;font-size:0}
+.logo-img + .logo{display:none}
+.boas .logo-img{border-color:transparent}
+
+/* ---------- Botão de tema claro/escuro ---------- */
+.tema-btn{white-space:nowrap}
+.tema-btn .i-sol,html.dark .tema-btn .i-lua{display:none}
+html.dark .tema-btn .i-sol{display:inline-block}
+#login{position:relative}
+.tema-canto{position:absolute;top:16px;right:16px;z-index:2}
+@media (max-width:860px){.entra{padding-top:68px}}
+@media (max-width:640px){.tema-btn .tema-txt{display:none}.tema-btn{padding:9px 11px}.logo-img{height:36px}}
 
 /* ---------- Como usar ---------- */
 .guia{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);margin:0 0 18px;padding:0 18px}
@@ -351,6 +368,8 @@ li button.item[aria-current=true] .agora{display:inline-flex}
   <symbol id="i-plus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></symbol>
   <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></symbol>
   <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
 </svg>
 
 <noscript><p style="padding:24px">Para usar o site, ative o JavaScript do navegador.</p></noscript>
@@ -360,8 +379,9 @@ li button.item[aria-current=true] .agora{display:inline-flex}
 
 <!-- ======== TELA DE ENTRADA ======== -->
 <main id="login" hidden>
+  <button class="btn sec tema-btn tema-canto" type="button"><svg class="ic i-lua" aria-hidden="true"><use href="#i-moon"/></svg><svg class="ic i-sol" aria-hidden="true"><use href="#i-sun"/></svg><span class="tema-txt">Modo escuro</span></button>
   <section class="boas">
-    <div class="marca"><span class="logo"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg></span><strong>Vídeos Peat</strong></div>
+    <div class="marca"><img class="logo-img" alt="Triunfo Logística"><span class="logo"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg></span><strong>Vídeos Peat</strong></div>
     <h1>Instruções, riscos e treinamentos em um só lugar</h1>
     <p class="lead">Assista aos vídeos, leia apresentações e PDFs e faça as provas direto no navegador, sem baixar nada.</p>
     <ul class="oque" aria-label="O que você encontra aqui">
@@ -373,7 +393,7 @@ li button.item[aria-current=true] .agora{display:inline-flex}
   </section>
   <div class="entra">
     <form id="f">
-      <div class="marca-mobile"><span class="logo"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg></span><strong>Vídeos Peat</strong></div>
+      <div class="marca-mobile"><img class="logo-img" alt="Triunfo Logística"><span class="logo"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg></span><strong>Vídeos Peat</strong></div>
       <div>
         <h2 class="f-tit">Entrar</h2>
         <p class="mute">Digite a senha que você recebeu para ver os vídeos, apresentações, PDFs e provas.</p>
@@ -395,7 +415,7 @@ li button.item[aria-current=true] .agora{display:inline-flex}
 <div id="app" class="wrap" hidden>
   <header class="topo">
     <div class="marca">
-      <span class="logo"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg></span>
+      <img class="logo-img" alt="Triunfo Logística"><span class="logo"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg></span>
       <div>
         <h1>Vídeos Peat</h1>
         <p>Biblioteca de ITs, APRs, treinamentos e provas</p>
@@ -404,9 +424,7 @@ li button.item[aria-current=true] .agora{display:inline-flex}
     <div class="topo-dir">
       <span class="chip adm" id="admTag" hidden>Administrador</span>
 
-      <button id="tema" class="btn sec" type="button">
-        🌙 Modo Escuro
-      </button>
+      <button class="btn sec tema-btn" type="button"><svg class="ic i-lua" aria-hidden="true"><use href="#i-moon"/></svg><svg class="ic i-sol" aria-hidden="true"><use href="#i-sun"/></svg><span class="tema-txt">Modo escuro</span></button>
 
       <button id="sair" class="btn sec" type="button"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg>Sair</button>
     </div>
@@ -658,46 +676,37 @@ function mostrarLogin() {
   pronto();
 }
 // =======================
-// MODO ESCURO
+// LOGO DA TRIUNFO
+// Salve o arquivo do logo na mesma pasta deste index.html.
+// Se o seu arquivo tiver outro nome ou extensão, troque só a linha abaixo.
 // =======================
+const ARQUIVO_LOGO = "logo-triunfo.png";
+document.querySelectorAll("img.logo-img").forEach(img => {
+  img.addEventListener("error", () => img.remove()); // sem o arquivo, volta o ícone de play
+  img.src = ARQUIVO_LOGO;
+});
 
-function aplicarTema(){
-
-  const escuro =
-    localStorage.getItem("tema") === "dark";
-
-  document.documentElement.classList.toggle(
-    "dark",
-    escuro
-  );
-
-  const btn = document.getElementById("tema");
-
-  if(btn){
-    btn.textContent = escuro
-      ? "☀️ Modo Claro"
-      : "🌙 Modo Escuro";
-  }
+// =======================
+// TEMA CLARO / ESCURO
+// =======================
+function aplicarTema(escuro){
+  document.documentElement.classList.toggle("dark", escuro);
+  const acao = escuro ? "Modo claro" : "Modo escuro";
+  document.querySelectorAll(".tema-btn").forEach(btn => {
+    btn.querySelector(".tema-txt").textContent = acao;
+    btn.setAttribute("aria-label", "Ativar " + acao.toLowerCase());
+    btn.title = "Ativar " + acao.toLowerCase();
+  });
 }
 
 document.addEventListener("click", e => {
-
-  const botao = e.target.closest("#tema");
-
-  if(!botao) return;
-
-  const escuro =
-    localStorage.getItem("tema") === "dark";
-
-  localStorage.setItem(
-    "tema",
-    escuro ? "light" : "dark"
-  );
-
-  aplicarTema();
+  if(!e.target.closest(".tema-btn")) return;
+  const escuro = !document.documentElement.classList.contains("dark");
+  gravarLS("tema", escuro ? "dark" : "light");
+  aplicarTema(escuro);
 });
 
-aplicarTema();
+aplicarTema(lerLS("tema") === "dark");
 async function sair() {
   try { await sb.auth.signOut(); } catch {}
   apagarLS("peat:entrada");
